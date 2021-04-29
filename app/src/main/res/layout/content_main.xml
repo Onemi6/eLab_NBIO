@@ -24,6 +24,14 @@
             android:text="@string/Tips" />
 
         <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="位置" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -66,8 +74,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/activity_horizontal_margin4"
-                android:paddingEnd="@dimen/activity_horizontal_margin4"
                 android:paddingStart="@dimen/activity_horizontal_margin4"
+                android:paddingEnd="@dimen/activity_horizontal_margin4"
                 android:text="@string/select_have" />
 
             <TextView

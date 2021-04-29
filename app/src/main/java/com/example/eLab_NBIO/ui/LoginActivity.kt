@@ -1,9 +1,7 @@
 package com.example.eLab_NBIO.ui
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -11,12 +9,11 @@ import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.dou361.dialogui.DialogUIUtils
 import com.example.eLab_NBIO.R
 import com.example.eLab_NBIO.http.RetrofitService
 import com.example.eLab_NBIO.models.Login
+import com.example.eLab_NBIO.util.PermissionUtil
 import com.example.eLab_NBIO.util.RSAUtil
 import com.example.eLab_NBIO.util.SpValueUtil
 import com.example.eLab_NBIO.util.Util
@@ -36,10 +33,7 @@ class LoginActivity : AppCompatActivity() {
     private var str_password: String? = null
     private var str_imei: String? = null
     private var _context: Context? = null
-    private val MY_PERMISSIONS_REQUEST = 3000
 
-    //定义一个list，用于存储需要申请的权限
-    private val permissionList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
         val intent = intent
         loginType = intent.getIntExtra("login_type", 0)
         initView()
-        getPermission()
+        PermissionUtil.init(this, this)
         /*FileDir();*/
         try {
             Thread.sleep(1000)
@@ -203,44 +197,6 @@ class LoginActivity : AppCompatActivity() {
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
-    }
-
-    private fun getPermission() {
-        permissionList.add(Manifest.permission.INTERNET)
-        permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-        permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        permissionList.add(Manifest.permission.CAMERA)
-        permissionList.add(Manifest.permission.READ_PHONE_STATE)
-        permissionList.add(Manifest.permission.ACCESS_COARSE_LOCATION)
-        permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        checkAndRequestPermissions(permissionList)
-    }
-
-    //调用封装好的申请权限的方法
-    private fun checkAndRequestPermissions(permissionList: ArrayList<String>) {
-        val list = ArrayList(permissionList)
-        val it = list.iterator()
-        while (it.hasNext()) {
-            val permission = it.next()
-            //检查权限是否已经申请
-            val hasPermission = ContextCompat.checkSelfPermission(this, permission)
-            if (hasPermission == PackageManager.PERMISSION_GRANTED) {
-                it.remove()
-            }
-        }
-        /*        *
-         *补充说明：ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission
-         * .RECORD_AUDIO);
-         *对于原生Android，如果用户选择了“不再提示”，那么shouldShowRequestPermissionRationale就会为true。
-         *此时，用户可以弹出一个对话框，向用户解释为什么需要这项权限。
-         *对于一些深度定制的系统，如果用户选择了“不再提示”，那么shouldShowRequestPermissionRationale永远为false
-         **/
-        if (list.size == 0) {
-            return
-        }
-        val permissions = list.toTypedArray()
-        //正式请求权限
-        ActivityCompat.requestPermissions(this, permissions, this.MY_PERMISSIONS_REQUEST)
     }
 
     fun FileDir() {

@@ -1,8 +1,9 @@
 package com.example.eLab_NBIO.ui
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -11,16 +12,16 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.eLab_NBIO.R
-import com.example.eLab_NBIO.util.ActivityUtil
-import com.example.eLab_NBIO.util.SpValueUtil
-import com.example.eLab_NBIO.util.Util
+import com.example.eLab_NBIO.util.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 
 class MainActivity : AppCompatActivity() {
 
+    private val REQUEST_LOCATION_PERMISSION_CODE = 100
     private var mExitTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +60,9 @@ class MainActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(mToggle)
         /*同步drawerlayout的状态*/
         mToggle.syncState()
+
+        //showLocation()
+        initLocation()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -155,6 +159,7 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
     /**
      * 拦截返回事件，自处理
      */
@@ -165,7 +170,7 @@ class MainActivity : AppCompatActivity() {
             if (System.currentTimeMillis() - mExitTime > 2000) {
                 // Object mHelperUtils;
                 Snackbar.make(
-                    toolbar_main, "再按一次退出" + resources.getString(R.string.app_name),
+                    toolbar_main, "再按一次退出",
                     Snackbar.LENGTH_LONG
                 ).setAction("Action", null)
                     .show()
@@ -175,5 +180,64 @@ class MainActivity : AppCompatActivity() {
             }
         }
         //super.onBackPressed()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LocationUtil.removeLocationUpdatesListener()
+    }
+
+    override fun onResume() {
+        //挂上LocationListener, 在状态变化时刷新位置显示，因为requestPermissionss是异步执行的，所以要先确认是否有权限
+        super.onResume()
+        initLocation()
+    }
+
+    private fun initLocation() {
+        if (LocationUtil.getInstance(this@MainActivity)?.isLocationProviderEnabled() == true) {
+            val location = LocationUtil.getInstance(this@MainActivity)?.showLocation()
+            if (location != null) {
+                //tv_location.text = "地理位置：lon:${location.longitude};lat:${location.latitude}"
+                val address: String = "纬度：" + location.latitude + "经度：" + location.longitude
+                tv_location.text = address
+                //tv_location.text=getAddress(location.getLongitude(),location.getLatitude())
+            }
+        } else {
+            requestLocation()
+        }
+    }
+
+    /**
+     * 检查地理位置开关是否打开，如果未打开，则提示用户打开地理位置开关。
+     * 如果已打开，则显示地理位置；如果被拒绝，直接关闭窗口。
+     */
+    private fun requestLocation() {
+        val message = "本应用需要获取地理位置，请打开获取位置的开关"
+        val alertDialog = AlertDialog.Builder(this).setMessage(message).setCancelable(false)
+            .setPositiveButton(android.R.string.ok)
+            { dialog, _ ->
+                dialog.dismiss()
+                gotoSysLocationSettingsPage()
+            }
+            .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .create()
+        alertDialog.show()
+    }
+
+    private fun gotoSysLocationSettingsPage() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_LOCATION_SOURCE_SETTINGS
+        startActivityForResult(intent, REQUEST_LOCATION_PERMISSION_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_LOCATION_PERMISSION_CODE -> {
+                initLocation()
+            }
+            else -> {
+            }
+        }
     }
 }
