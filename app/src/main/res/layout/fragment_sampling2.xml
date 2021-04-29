@@ -1,0 +1,299 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.sampling.SamplingFragment2">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:id="@+id/list_details_Fragment2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="实验室编号" />
+
+                    <EditText
+                        android:id="@+id/details_1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        android:inputType="text"
+                        tools:ignore="LabelFor" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:text="气象条件" />
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="天气" />
+
+                        <EditText
+                            android:id="@+id/details_2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:autofillHints=""
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                            android:singleLine="true"
+                            tools:ignore="LabelFor,TextFields" />
+                    </TableRow>
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="气温(℃)" />
+
+                        <EditText
+                            android:id="@+id/details_3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:autofillHints=""
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                            android:singleLine="true"
+                            tools:ignore="LabelFor,TextFields" />
+                    </TableRow>
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="气压(kPa)" />
+
+                        <EditText
+                            android:id="@+id/details_4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:autofillHints=""
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                            android:singleLine="true"
+                            tools:ignore="LabelFor,TextFields" />
+                    </TableRow>
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="湿度(%)" />
+
+                        <EditText
+                            android:id="@+id/details_5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:autofillHints=""
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                            android:singleLine="true"
+                            tools:ignore="LabelFor,TextFields" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="委托单位" />
+
+                    <EditText
+                        android:id="@+id/details_6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                        android:singleLine="true"
+                        tools:ignore="LabelFor,TextFields" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:text="便携式水质分析仪" />
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="设备型号" />
+
+                        <Spinner
+                            android:id="@+id/details_7"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:overlapAnchor="false" />
+                    </TableRow>
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="设备编号" />
+
+                        <EditText
+                            android:id="@+id/details_8"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:autofillHints=""
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                            android:singleLine="true"
+                            tools:ignore="LabelFor,TextFields" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="采样依据" />
+
+                    <Spinner
+                        android:id="@+id/details_9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:overlapAnchor="false" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="测定依据" />
+
+                    <Spinner
+                        android:id="@+id/details_10"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:overlapAnchor="false" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2sp"
+                    android:background="#cccccc"
+                    tools:ignore="SmallSp" />
+            </TableLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3sp"
+                tools:ignore="SmallSp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_samplingInfo2_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

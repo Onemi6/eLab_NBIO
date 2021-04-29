@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item android:title="@string/menu_sampling">
+            <menu>
+                <item
+                    android:id="@+id/nav_sampling1"
+                    android:icon="@drawable/ic_menu_menu_24dp"
+                    android:title="@string/menu_sampling_type1" />
+                <item
+                    android:id="@+id/nav_sampling2"
+                    android:icon="@drawable/ic_menu_menu_24dp"
+                    android:title="@string/menu_sampling_type2" />
+                <item
+                    android:id="@+id/nav_sampling3"
+                    android:icon="@drawable/ic_menu_menu_24dp"
+                    android:title="@string/menu_sampling_type3" />
+                <item
+                    android:id="@+id/nav_sampling4"
+                    android:icon="@drawable/ic_menu_menu_24dp"
+                    android:title="@string/menu_sampling_type4" />
+                <item
+                    android:id="@+id/nav_sampling5"
+                    android:icon="@drawable/ic_menu_menu_24dp"
+                    android:title="@string/menu_sampling_type5" />
+                <item
+                    android:id="@+id/nav_sampling6"
+                    android:icon="@drawable/ic_menu_menu_24dp"
+                    android:title="@string/menu_sampling_type6" />
+                <item
+                    android:id="@+id/nav_sampling7"
+                    android:icon="@drawable/ic_menu_menu_24dp"
+                    android:title="@string/menu_sampling_type7" />
+            </menu>
+        </item>
+
+        <item android:title="@string/menu_other">
+            <menu>
+                <item
+                    android:id="@+id/nav_logout"
+                    android:icon="@drawable/ic_menu_exit_24dp"
+                    android:title="@string/menu_logout" />
+            </menu>
+        </item>
+
+    </group>
+</menu>

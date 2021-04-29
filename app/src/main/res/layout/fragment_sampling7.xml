@@ -1,0 +1,199 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.sampling.SamplingFragment7">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:id="@+id/list_details_Fragment7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="采样海区" />
+
+                    <EditText
+                        android:id="@+id/details_1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        android:inputType="text"
+                        tools:ignore="LabelFor" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="航次" />
+
+                    <EditText
+                        android:id="@+id/details_2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                        android:singleLine="true"
+                        tools:ignore="LabelFor,TextFields" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="采样点" />
+
+                    <EditText
+                        android:id="@+id/details_3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                        android:singleLine="true"
+                        tools:ignore="LabelFor,TextFields" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="采样时间" />
+
+                    <EditText
+                        android:id="@+id/details_4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                        android:singleLine="true"
+                        tools:ignore="LabelFor,TextFields" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="编号" />
+
+                    <EditText
+                        android:id="@+id/details_5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                        android:singleLine="true"
+                        tools:ignore="LabelFor,TextFields" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="水层" />
+
+                    <EditText
+                        android:id="@+id/details_6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        android:inputType="text"
+                        android:singleLine="true"
+                        tools:ignore="LabelFor,TextFields" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2sp"
+                    android:background="#cccccc"
+                    tools:ignore="SmallSp" />
+            </TableLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3sp"
+                tools:ignore="SmallSp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_samplingInfo7_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>
