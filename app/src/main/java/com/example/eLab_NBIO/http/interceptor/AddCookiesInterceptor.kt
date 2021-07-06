@@ -15,6 +15,11 @@ class AddCookiesInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val builder: Request.Builder = chain.request().newBuilder()
         val stringSet = SpValueUtil.getStringSet("Cookie")
+        val token = SpValueUtil.getString("token","")
+        if(token.isNotEmpty())
+        {
+            builder.addHeader("authorization", "Bearer $token")
+        }
         for (cookie in stringSet) {
             builder.addHeader("Cookie", cookie)
         }

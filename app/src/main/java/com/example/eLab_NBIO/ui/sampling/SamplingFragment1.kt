@@ -124,7 +124,7 @@ class SamplingFragment1 : Fragment(), AdapterView.OnItemSelectedListener {
         )
         mView.findViewById<Spinner>(R.id.details_2)?.adapter = ada3
 
-        val ada4: ArrayAdapter<*> = ArrayAdapter.createFromResource(
+        val ada4: ArrayAdapter<*> = ArrayAdapter.`createFromResource`(
             context!!,
             R.array.cedingyiju,
             android.R.layout.simple_spinner_dropdown_item

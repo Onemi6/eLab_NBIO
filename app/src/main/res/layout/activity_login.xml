@@ -46,19 +46,15 @@
                 android:maxLines="1"
                 android:singleLine="true" />
 
-            <View
+            <Spinner
+                android:id="@+id/lab"
                 android:layout_width="match_parent"
-                android:layout_height="6sp" />
-
-            <TextView
-                android:id="@+id/imei_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/imei_type"/>
+                android:layout_height="wrap_content" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="6sp" />
+                android:layout_height="6sp"
+                tools:ignore="SmallSp" />
 
             <CheckBox
                 android:id="@+id/remember_password"

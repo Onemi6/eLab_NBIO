@@ -6,15 +6,16 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.text.TextUtils
-import android.util.Base64
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.SpinnerAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.dou361.dialogui.DialogUIUtils
 import com.example.eLab_NBIO.R
 import com.example.eLab_NBIO.http.RetrofitService
+import com.example.eLab_NBIO.models.Lab
 import com.example.eLab_NBIO.models.Login
 import com.example.eLab_NBIO.util.PermissionUtil
-import com.example.eLab_NBIO.util.RSAUtil
 import com.example.eLab_NBIO.util.SpValueUtil
 import com.example.eLab_NBIO.util.Util
 import com.google.android.material.snackbar.Snackbar
@@ -25,14 +26,16 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 class LoginActivity : AppCompatActivity() {
 
     private var loginType = 0
-    private var str_account: String? = null
-    private var str_password: String? = null
-    private var str_imei: String? = null
+    private var accountStr: String? = null
+    private var passwordStr: String? = null
     private var _context: Context? = null
+    private var labName: ArrayList<Lab> = ArrayList()
+    private var adapterLab: ArrayAdapter<Lab>? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,65 +58,86 @@ class LoginActivity : AppCompatActivity() {
 
 
     private fun initView() {
+        attemptGetLabs()
         val isRemember: Boolean = SpValueUtil.getBoolean("isRemember", false)
-        account.setText(SpValueUtil.getString("Login_Name"))
+        account.setText(SpValueUtil.getString("LOGIN_NAME"))
+
         if (isRemember) {
-            password.setText(SpValueUtil.getString("Password"))
+            password.setText(SpValueUtil.getString("PASSWORD"))
             remember_password.isChecked = true
         } else {
             //password.setText(SpValueUtil.getString("Password"))
             remember_password.isChecked = false
         }
-        str_imei = if (TextUtils.isEmpty(SpValueUtil.getString("IMEI/MAC"))) {
-            if (!TextUtils.isEmpty(_context?.let { Util.getIMEI(it) })) {
-                _context?.let { Util.getIMEI(it) }
-            } else {
-                Util.getMac()?.replace(":", "")?.toUpperCase(Locale.ROOT)
-            }
-        } else {
-            SpValueUtil.getString("IMEI/MAC")
-        }
-        imei_type.text = "IMEI/MAC: $str_imei"
     }
 
     private fun login() {
-/*        if (login_type == 1) {
-            str_account = SpValueUtil.getString("Login_Name")
-            str_password = SpValueUtil.getString("Password")
-            attemptLogin()
-        }*/
         btn_login.setOnClickListener {
-            str_account = account.text.toString()
-            str_password = password.text.toString()
-            if (TextUtils.isEmpty(str_account)) {
+            accountStr = account.text.toString()
+            passwordStr = password.text.toString()
+            if (TextUtils.isEmpty(accountStr)) {
                 account.requestFocus()
                 account.error = "账号不能为空"
             } else {
                 account.error = null
-                if (TextUtils.isEmpty(str_password)) {
+                if (TextUtils.isEmpty(passwordStr)) {
                     password.requestFocus()
                     password.error = "密码不能为空"
                 } else {
                     password.error = null
                     attemptLogin()
-                    //至少8个字符，至少1个大写字母，1个小写字母和1个数字
-                    /*if (str_password!!.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\s\\S]{8,}$")) {
-                        password.error = null
-                        if (NetworkUtil.isNetworkAvailable(_context)) {
-                            attemptLogin()
-                        } else {
-                            Snackbar.make(
-                                btn_login, "当前网络不可用",
-                                Snackbar.LENGTH_LONG
-                            ).setAction("Action", null).show()
-                        }
-                    } else {
-                        //Log.v("password", password+"密码强度不够");
-                        password.setError("密码强度不够")
-                    }*/
                 }
             }
         }
+    }
+
+    private fun attemptGetLabs() {
+        RetrofitService.getApiService()
+            .getLabs()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<MutableList<Lab>> {
+                override fun onComplete() {
+                    Log.i("Login", "onComplete")
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                    Log.i("Login", "onSubscribe")
+                }
+
+                override fun onNext(t: MutableList<Lab>) {
+                    Log.i("Login", "onNext")
+                    for (l in t) {
+                        labName.add(l)
+                    }
+                    adapterLab = labName.let {
+                        _context?.let { it1 ->
+                            ArrayAdapter(
+                                it1, android.R.layout.simple_spinner_dropdown_item,
+                                it
+                            )
+                        }
+                    }
+                    lab.adapter = adapterLab
+                    adapterLab?.notifyDataSetChanged()
+
+                    //lab.setSelection(0)
+                    val spinnerAdapter: SpinnerAdapter = lab.adapter
+                    val k = spinnerAdapter.count
+                    for (i in 0 until k) {
+                        val item = spinnerAdapter.getItem(i) as Lab
+                        if (SpValueUtil.getString("LAB_ID") == item.ID) {
+                            lab.setSelection(i, true)
+                            break
+                        }
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.i("Login", "onError")
+                }
+
+            })
     }
 
     private fun attemptLogin() {
@@ -123,80 +147,77 @@ class LoginActivity : AppCompatActivity() {
             false
         )
         dialogLogin.show()
-        try {
-            val publicKey = RSAUtil.loadPublicKey(RSAUtil.PUCLIC_KEY)
-            //Log.v("publicKey",publicKey.toString());
-            // 加密
-            //byte[] encryptByte = RSAUtil.encryptData(password.getBytes(), publicKey);
-            // 为了方便观察吧加密后的数据用base64加密转一下，要不然看起来是乱码,所以解密是也是要用Base64先转换
-            /*String password_afterEncrypt = Base64.encodeToString(encryptByte, Base64.DEFAULT);
-            String data = "{\"Login_Name\":\"" + account + "\"," + "\"Password\":\"" +
-                    password_afterEncrypt +  "\"," + "\"IMEI\":\"" +imei + "\"}";*/
 
-            val encryptByte = RSAUtil.encryptData("784512Mustafa".toByteArray(), publicKey)
-            // 为了方便观察吧加密后的数据用base64加密转一下，要不然看起来是乱码,所以解密是也是要用Base64先转换
-            val password_afterEncrypt = Base64.encodeToString(encryptByte, Base64.DEFAULT)
-            val data = "{\"Login_Name\":\"" + "mustafa" + "\"," + "\"Password\":\"" +
-                    password_afterEncrypt + "\"," + "\"IMEI\":\"" + "861695037552457" + "\"}"
+        val map = mutableMapOf<String, Any>()
+        map["loginName"] = accountStr.toString()
+        map["password"] = passwordStr.toString()
 
-            RetrofitService.getApiService()
-                .login(data)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<Login> {
-                    override fun onComplete() {
-                        Log.i("Login", "onComplete")
-                    }
+        val item = lab.selectedItem as Lab
+        map["lab"] = item.ID
 
-                    override fun onSubscribe(d: Disposable) {
-                        Log.i("Login", "onSubscribe")
-                    }
+/*        for (l in labs) {
+            if (lab.selectedItem.toString() == l.NAME) {
+                map["lab"] = l.ID
+                break
+            }
+        }*/
 
-                    override fun onNext(t: Login) {
-                        Log.i("Login", "onNext")
-                        if (t.MESSAGE == null) {
-                            if (remember_password.isChecked) {
-                                SpValueUtil.setBoolean("isRemember", true)
-                            } else {
-                                SpValueUtil.setBoolean("isRemember", false)
-                            }
-                            SpValueUtil.setString("Login_Name", str_account)
-                            SpValueUtil.setString("Password", str_password)
-                            SpValueUtil.setString("TOKEN", t.TOKEN)
-                            SpValueUtil.setString("NAME", t.NAME)
-                            SpValueUtil.setString("NO", t.NO)
+        RetrofitService.getApiService()
+            .login(map)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Login> {
+                override fun onComplete() {
+                    Log.i("Login", "onComplete")
+                }
 
-                            if (loginType == 1) {
-                                Handler().postDelayed({ finish() }, 500) // 延时1s执行
-                            } else if (loginType == -1) {
-                                //DialogUIUtils.dismiss(dialogLogin)
-                                Snackbar.make(btn_login, "登录成功", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show()
-                                Handler().postDelayed({
-                                    startActivity(
-                                        Intent(
-                                            this@LoginActivity,
-                                            MainActivity::class.java
-                                        )
-                                    )
-                                    finish()
-                                }, 3000) //延时3s执行
-                            }
+                override fun onSubscribe(d: Disposable) {
+                    Log.i("Login", "onSubscribe")
+                }
+
+                override fun onNext(t: Login) {
+                    Log.i("Login", "onNext")
+                    if (t.message == null) {
+                        if (remember_password.isChecked) {
+                            SpValueUtil.setBoolean("isRemember", true)
                         } else {
-                            account.requestFocus()
-                            account.error = t.MESSAGE
+                            SpValueUtil.setBoolean("isRemember", false)
                         }
-                    }
+                        SpValueUtil.setString("ID", t.ID.toString())
+                        SpValueUtil.setString("NAME", t.NAME)
+                        SpValueUtil.setString("LOGIN_NAME", t.LOGIN_NAME)
+                        SpValueUtil.setString("PASSWORD", passwordStr)
+                        SpValueUtil.setString("LAB_ID", t.LAB_ID)
+                        SpValueUtil.setString("token", t.token)
 
-                    override fun onError(e: Throwable) {
-                        Log.i("Login", "onError")
+                        if (loginType == 1) {
+                            Handler().postDelayed({ finish() }, 500) // 延时1s执行
+                        } else if (loginType == -1) {
+                            //DialogUIUtils.dismiss(dialogLogin)
+                            Snackbar.make(btn_login, "登录成功", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show()
+                            Handler().postDelayed({
+                                startActivity(
+                                    Intent(
+                                        this@LoginActivity,
+                                        MainActivity::class.java
+                                    )
+                                )
+                                finish()
+                            }, 3000) //延时3s执行
+                        }
+                    } else {
+                        account.requestFocus()
+                        account.error = t.message
                     }
+                }
 
-                })
-            DialogUIUtils.dismiss(dialogLogin)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
+                override fun onError(e: Throwable) {
+                    Log.i("Login", "onError")
+                }
+
+            })
+        DialogUIUtils.dismiss(dialogLogin)
     }
 
     fun FileDir() {
