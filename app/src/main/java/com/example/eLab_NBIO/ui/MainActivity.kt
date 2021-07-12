@@ -1,9 +1,11 @@
 package com.example.eLab_NBIO.ui
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -11,24 +13,64 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.dou361.dialogui.DialogUIUtils
 import com.example.eLab_NBIO.R
+import com.example.eLab_NBIO.adapter.SamplingAdapter
+import com.example.eLab_NBIO.http.RetrofitService
+import com.example.eLab_NBIO.models.Sampling.*
+import com.example.eLab_NBIO.models.Tasks
 import com.example.eLab_NBIO.util.*
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 class MainActivity : AppCompatActivity() {
 
-    private val REQUEST_LOCATION_PERMISSION_CODE = 100
+    private val requestLocationPermissionCode = 100
     private var mExitTime: Long = 0
+    private var _context: Context? = null
+    private lateinit var billName: String
+    private var type: Int = 0
+    private lateinit var sampling1Adapter: SamplingAdapter<Sampling1>
+    private var itemList1: MutableList<Sampling1>? = ArrayList(0)
+
+    private lateinit var sampling2Adapter: SamplingAdapter<Sampling2>
+    private var itemList2: MutableList<Sampling2>? = ArrayList(0)
+
+    private lateinit var sampling3Adapter: SamplingAdapter<Sampling3>
+    private var itemList3: MutableList<Sampling3>? = ArrayList(0)
+
+    private lateinit var sampling4Adapter: SamplingAdapter<Sampling4>
+    private var itemList4: MutableList<Sampling4>? = ArrayList(0)
+
+    private lateinit var sampling5Adapter: SamplingAdapter<Sampling5>
+    private var itemList5: MutableList<Sampling5>? = ArrayList(0)
+
+    private lateinit var sampling6Adapter: SamplingAdapter<Sampling6>
+    private var itemList6: MutableList<Sampling6>? = ArrayList(0)
+
+    private lateinit var sampling7Adapter: SamplingAdapter<Sampling7>
+    private var itemList7: MutableList<Sampling7>? = ArrayList(0)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        _context = this
+        CrashHandler.getInstance()?.init(_context)
         initView()
+        viewAction()
         /*设置监听器*/
         setListener()
     }
@@ -61,6 +103,27 @@ class MainActivity : AppCompatActivity() {
         /*同步drawerlayout的状态*/
         mToggle.syncState()
 
+        //初始化RecyclerView
+        rv_mainInfo_add.setHasFixedSize(true)
+        rv_mainInfo_add.isNestedScrollingEnabled = false
+
+        //创建LinearLayoutManager 对象 这里使用 LinearLayoutManager 是线性布局的意思
+        val layoutManager = LinearLayoutManager(_context)
+        //设置RecyclerView 布局
+        rv_mainInfo_add.layoutManager = layoutManager
+
+        //设置Adapter
+        sampling1Adapter = SamplingAdapter(_context, itemList1, 1)
+        sampling2Adapter = SamplingAdapter(_context, itemList2, 2)
+        sampling3Adapter = SamplingAdapter(_context, itemList3, 3)
+        sampling4Adapter = SamplingAdapter(_context, itemList4, 4)
+        sampling5Adapter = SamplingAdapter(_context, itemList5, 5)
+        sampling6Adapter = SamplingAdapter(_context, itemList6, 6)
+        sampling7Adapter = SamplingAdapter(_context, itemList7, 7)
+        //默认加载1
+        rv_mainInfo_add.adapter = sampling1Adapter
+
+        setType(1)
         //showLocation()
         initLocation()
     }
@@ -75,25 +138,25 @@ class MainActivity : AppCompatActivity() {
         nav_view.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_sampling1 -> {
-                    tv_title_main.text = resources.getString(R.string.menu_sampling_type1)
+                    setType(1)
                 }
                 R.id.nav_sampling2 -> {
-                    tv_title_main.text = resources.getString(R.string.menu_sampling_type2)
+                    setType(2)
                 }
                 R.id.nav_sampling3 -> {
-                    tv_title_main.text = resources.getString(R.string.menu_sampling_type3)
+                    setType(3)
                 }
                 R.id.nav_sampling4 -> {
-                    tv_title_main.text = resources.getString(R.string.menu_sampling_type4)
+                    setType(4)
                 }
                 R.id.nav_sampling5 -> {
-                    tv_title_main.text = resources.getString(R.string.menu_sampling_type5)
+                    setType(5)
                 }
                 R.id.nav_sampling6 -> {
-                    tv_title_main.text = resources.getString(R.string.menu_sampling_type6)
+                    setType(6)
                 }
                 R.id.nav_sampling7 -> {
-                    tv_title_main.text = resources.getString(R.string.menu_sampling_type7)
+                    setType(7)
                 }
                 R.id.nav_logout -> {
                     val builder =
@@ -123,36 +186,47 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_sampleTag -> {
-                val intentDetails = Intent()
-                intentDetails.setClass(
-                    this@MainActivity,
-                    DetailsActivity::class.java
-                )
-                when (tv_title_main.text) {
-                    resources.getString(R.string.menu_sampling_type1) -> {
-                        intentDetails.putExtra("fragment_type", 1)
+            R.id.action_add -> {
+                when (type) {
+                    1 -> {
+                        val task = Sampling1()
+                        Tasks.taskList1.add(task)
+                        sampling1Adapter.changList(Tasks.taskList1)
                     }
-                    resources.getString(R.string.menu_sampling_type2) -> {
-                        intentDetails.putExtra("fragment_type", 2)
+                    2 -> {
+                        val task = Sampling2()
+                        Tasks.taskList2.add(task)
+                        sampling2Adapter.changList(Tasks.taskList2)
                     }
-                    resources.getString(R.string.menu_sampling_type3) -> {
-                        intentDetails.putExtra("fragment_type", 3)
+                    3 -> {
+                        val task = Sampling3()
+                        Tasks.taskList3.add(task)
+                        sampling3Adapter.changList(Tasks.taskList3)
                     }
-                    resources.getString(R.string.menu_sampling_type4) -> {
-                        intentDetails.putExtra("fragment_type", 4)
+                    4 -> {
+                        val task = Sampling4()
+                        Tasks.taskList4.add(task)
+                        sampling4Adapter.changList(Tasks.taskList4)
                     }
-                    resources.getString(R.string.menu_sampling_type5) -> {
-                        intentDetails.putExtra("fragment_type", 5)
+                    5 -> {
+                        val task = Sampling5()
+                        Tasks.taskList5.add(task)
+                        sampling5Adapter.changList(Tasks.taskList5)
                     }
-                    resources.getString(R.string.menu_sampling_type6) -> {
-                        intentDetails.putExtra("fragment_type", 6)
+                    6 -> {
+                        val task = Sampling6()
+                        Tasks.taskList6.add(task)
+                        sampling6Adapter.changList(Tasks.taskList6)
                     }
-                    resources.getString(R.string.menu_sampling_type7) -> {
-                        intentDetails.putExtra("fragment_type", 7)
+                    7 -> {
+                        val task = Sampling7()
+                        Tasks.taskList7.add(task)
+                        sampling7Adapter.changList(Tasks.taskList7)
                     }
                 }
-                startActivity(intentDetails)
+            }
+            R.id.action_refresh -> {
+                attemptGetSamplings()
             }
             else -> {
             }
@@ -179,7 +253,7 @@ class MainActivity : AppCompatActivity() {
                 ActivityUtil.closeAllActivity()
             }
         }
-        //super.onBackPressed()
+        super.onBackPressed()
     }
 
     override fun onPause() {
@@ -227,17 +301,357 @@ class MainActivity : AppCompatActivity() {
     private fun gotoSysLocationSettingsPage() {
         val intent = Intent()
         intent.action = Settings.ACTION_LOCATION_SOURCE_SETTINGS
-        startActivityForResult(intent, REQUEST_LOCATION_PERMISSION_CODE)
+        startActivityForResult(intent, requestLocationPermissionCode)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_LOCATION_PERMISSION_CODE -> {
+            requestLocationPermissionCode -> {
                 initLocation()
             }
             else -> {
             }
         }
+    }
+
+    private fun attemptGetSamplings() {
+        val dialogLogin = DialogUIUtils.showLoading(
+            _context, "刷新任务中...", false, true,
+            false,
+            false
+        )
+        dialogLogin.show()
+        when (type) {
+            1 -> {
+                RetrofitService.getApiService()
+                    .getSamplings1(billName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<MutableList<Sampling1>> {
+                        override fun onComplete() {
+                            Log.i("getSamplings", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings", "onSubscribe")
+                        }
+
+                        override fun onNext(t: MutableList<Sampling1>) {
+                            Log.i("getSamplings", "onNext")
+                            rv_mainInfo_add.adapter = sampling1Adapter
+                            itemList1 = t
+                            sampling1Adapter.changList(itemList1)
+
+                            Tasks.taskList1 = itemList1 as MutableList<Sampling1>
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings", e.message.toString())
+                        }
+                    })
+            }
+            2 -> {
+                RetrofitService.getApiService()
+                    .getSamplings2(billName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<MutableList<Sampling2>> {
+                        override fun onComplete() {
+                            Log.i("getSamplings", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings", "onSubscribe")
+                        }
+
+                        override fun onNext(t: MutableList<Sampling2>) {
+                            Log.i("getSamplings", "onNext")
+                            rv_mainInfo_add.adapter = sampling2Adapter
+                            itemList2 = t
+                            sampling2Adapter.changList(itemList2)
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings", e.message.toString())
+                        }
+                    })
+            }
+            3 -> {
+                RetrofitService.getApiService()
+                    .getSamplings3(billName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<MutableList<Sampling3>> {
+                        override fun onComplete() {
+                            Log.i("getSamplings", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings", "onSubscribe")
+                        }
+
+                        override fun onNext(t: MutableList<Sampling3>) {
+                            Log.i("getSamplings", "onNext")
+                            rv_mainInfo_add.adapter = sampling3Adapter
+                            itemList3 = t
+                            sampling3Adapter.changList(itemList3)
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings", e.message.toString())
+                        }
+                    })
+            }
+            4 -> {
+                RetrofitService.getApiService()
+                    .getSamplings4(billName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<MutableList<Sampling4>> {
+                        override fun onComplete() {
+                            Log.i("getSamplings", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings", "onSubscribe")
+                        }
+
+                        override fun onNext(t: MutableList<Sampling4>) {
+                            Log.i("getSamplings", "onNext")
+                            rv_mainInfo_add.adapter = sampling4Adapter
+                            itemList4 = t
+                            sampling4Adapter.changList(itemList4)
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings", e.message.toString())
+                        }
+                    })
+            }
+            5 -> {
+                RetrofitService.getApiService()
+                    .getSamplings5(billName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<MutableList<Sampling5>> {
+                        override fun onComplete() {
+                            Log.i("getSamplings", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings", "onSubscribe")
+                        }
+
+                        override fun onNext(t: MutableList<Sampling5>) {
+                            Log.i("getSamplings", "onNext")
+                            rv_mainInfo_add.adapter = sampling5Adapter
+                            itemList5 = t
+                            sampling5Adapter.changList(itemList5)
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings", e.message.toString())
+                        }
+                    })
+            }
+            6 -> {
+                RetrofitService.getApiService()
+                    .getSamplings6(billName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<MutableList<Sampling6>> {
+                        override fun onComplete() {
+                            Log.i("getSamplings", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings", "onSubscribe")
+                        }
+
+                        override fun onNext(t: MutableList<Sampling6>) {
+                            Log.i("getSamplings", "onNext")
+                            rv_mainInfo_add.adapter = sampling6Adapter
+                            itemList6 = t
+                            sampling6Adapter.changList(itemList6)
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings", e.message.toString())
+                        }
+                    })
+            }
+            7 -> {
+                RetrofitService.getApiService()
+                    .getSamplings7(billName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<MutableList<Sampling7>> {
+                        override fun onComplete() {
+                            Log.i("getSamplings", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings", "onSubscribe")
+                        }
+
+                        override fun onNext(t: MutableList<Sampling7>) {
+                            Log.i("getSamplings", "onNext")
+                            rv_mainInfo_add.adapter = sampling7Adapter
+                            itemList7 = t
+                            sampling7Adapter.changList(itemList7)
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings", e.message.toString())
+                        }
+                    })
+            }
+
+        }
+        DialogUIUtils.dismiss(dialogLogin)
+    }
+
+    private fun setType(t: Int) {
+        when (t) {
+            1 -> {
+                type = 1
+                billName = resources.getString(R.string.billName_type1)
+                tv_title_main.text = resources.getString(R.string.menu_sampling_type1)
+            }
+            2 -> {
+                type = 2
+                billName = resources.getString(R.string.billName_type2)
+                tv_title_main.text = resources.getString(R.string.menu_sampling_type2)
+            }
+            3 -> {
+                type = 3
+                billName = resources.getString(R.string.billName_type3)
+                tv_title_main.text = resources.getString(R.string.menu_sampling_type3)
+            }
+            4 -> {
+                type = 4
+                billName = resources.getString(R.string.billName_type4)
+                tv_title_main.text = resources.getString(R.string.menu_sampling_type4)
+            }
+            5 -> {
+                type = 5
+                billName = resources.getString(R.string.billName_type5)
+                tv_title_main.text = resources.getString(R.string.menu_sampling_type5)
+            }
+            6 -> {
+                type = 6
+                billName = resources.getString(R.string.billName_type6)
+                tv_title_main.text = resources.getString(R.string.menu_sampling_type6)
+            }
+            7 -> {
+                type = 7
+                billName = resources.getString(R.string.billName_type7)
+                tv_title_main.text = resources.getString(R.string.menu_sampling_type7)
+            }
+        }
+        attemptGetSamplings()
+    }
+
+    private fun viewAction() {
+        sampling1Adapter.setOnKotlinItemClickListener(object :
+            SamplingAdapter.IKotlinItemClickListener {
+            override fun onItemClickListener(position: Int) {
+                Log.v("position", position.toString())
+                Tasks.position = position
+                val intentDetails = Intent()
+                intentDetails.setClass(
+                    this@MainActivity,
+                    DetailsActivity::class.java
+                )
+                intentDetails.putExtra("fragment_type", type)
+                //intentDetails.putExtra("position", position)
+                startActivity(intentDetails)
+            }
+        })
+        sampling2Adapter.setOnKotlinItemClickListener(object :
+            SamplingAdapter.IKotlinItemClickListener {
+            override fun onItemClickListener(position: Int) {
+                Tasks.position = position
+                val intentDetails = Intent()
+                intentDetails.setClass(
+                    this@MainActivity,
+                    DetailsActivity::class.java
+                )
+                intentDetails.putExtra("fragment_type", type)
+                intentDetails.putExtra("position", position)
+                startActivity(intentDetails)
+            }
+        })
+        sampling3Adapter.setOnKotlinItemClickListener(object :
+            SamplingAdapter.IKotlinItemClickListener {
+            override fun onItemClickListener(position: Int) {
+                Tasks.position = position
+                val intentDetails = Intent()
+                intentDetails.setClass(
+                    this@MainActivity,
+                    DetailsActivity::class.java
+                )
+                intentDetails.putExtra("fragment_type", type)
+                intentDetails.putExtra("position", position)
+                startActivity(intentDetails)
+            }
+        })
+        sampling4Adapter.setOnKotlinItemClickListener(object :
+            SamplingAdapter.IKotlinItemClickListener {
+            override fun onItemClickListener(position: Int) {
+                Tasks.position = position
+                val intentDetails = Intent()
+                intentDetails.setClass(
+                    this@MainActivity,
+                    DetailsActivity::class.java
+                )
+                intentDetails.putExtra("fragment_type", type)
+                intentDetails.putExtra("position", position)
+                startActivity(intentDetails)
+            }
+        })
+        sampling5Adapter.setOnKotlinItemClickListener(object :
+            SamplingAdapter.IKotlinItemClickListener {
+            override fun onItemClickListener(position: Int) {
+                Tasks.position = position
+                val intentDetails = Intent()
+                intentDetails.setClass(
+                    this@MainActivity,
+                    DetailsActivity::class.java
+                )
+                intentDetails.putExtra("fragment_type", type)
+                intentDetails.putExtra("position", position)
+                startActivity(intentDetails)
+            }
+        })
+        sampling6Adapter.setOnKotlinItemClickListener(object :
+            SamplingAdapter.IKotlinItemClickListener {
+            override fun onItemClickListener(position: Int) {
+                Tasks.position = position
+                val intentDetails = Intent()
+                intentDetails.setClass(
+                    this@MainActivity,
+                    DetailsActivity::class.java
+                )
+                intentDetails.putExtra("fragment_type", type)
+                intentDetails.putExtra("position", position)
+                startActivity(intentDetails)
+            }
+        })
+        sampling7Adapter.setOnKotlinItemClickListener(object :
+            SamplingAdapter.IKotlinItemClickListener {
+            override fun onItemClickListener(position: Int) {
+                Tasks.position = position
+                val intentDetails = Intent()
+                intentDetails.setClass(
+                    this@MainActivity,
+                    DetailsActivity::class.java
+                )
+                intentDetails.putExtra("fragment_type", type)
+                intentDetails.putExtra("position", position)
+                startActivity(intentDetails)
+            }
+        })
     }
 }

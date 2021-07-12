@@ -2,11 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <item
-        android:id="@+id/action_sampleTag"
+        android:id="@+id/action_add"
         android:orderInCategory="100"
-        android:title="@string/sampleTag"
+        android:title="@string/action_add"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="100"
+        android:title="@string/action_refresh"
         app:showAsAction="ifRoom" />
 
 </menu>

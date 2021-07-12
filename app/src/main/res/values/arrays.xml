@@ -1,33 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="SAMPLE_TYPE">
+    <string-array name="SHFS_YPLX">
         <item>工业废水</item>
         <item>生活废水</item>
         <item>其它</item>
     </string-array>
 
-    <string-array name="yiju">
+    <string-array name="SHFS_CYYJ">
         <item>HJ 493–2009 水质采样样品的保存和管理技术规定</item>
         <item>HJ 494–2009 水质采样技术指导</item>
         <item>HJ/T 91–2002 地表水和污水监测技术规范</item>
     </string-array>
 
-    <string-array name="xinghao">
+    <string-array name="SHFS_SBXH">
         <item>Multi3420</item>
         <item>HQ30D</item>
     </string-array>
 
-    <string-array name="cedingyiju">
+    <string-array name="SHFS_XCCDYJ">
         <item>水温：GB/T 13195–1991 水质 水温的测定 温度计或颠倒温度计测定法</item>
         <item>pH：GB 6920–1986 水质 pH值的测定玻璃电极法</item>
         <item>pH：便携式pH计法《水和废水监测分析方法》（第四版增补版)国家环保总局(2002年)</item>
     </string-array>
 
-    <string-array name="liuxiang">
+    <string-array name="SHFS_FSLX">
         <item>市政管道</item>
         <item>河流</item>
         <item>收集不外排</item>
         <item>其它</item>
+    </string-array>
+
+    <string-array name="SHFS_JZD">
+        <item>4.00</item>
+        <item>6.86</item>
+        <item>9.18</item>
+    </string-array>
+
+    <string-array name="SHFS_BZRY">
+        <item>4.00</item>
+        <item>6.86</item>
+        <item>9.18</item>
+    </string-array>
+
+    <string-array name="SHFS_GDJJRQK">
+        <item>是</item>
+        <item>否</item>
+    </string-array>
+
+    <string-array name="DBS_XH">
+        <item>Multi3420</item>
+        <item>HQ30d</item>
+    </string-array>
+
+    <string-array name="DBS_CYYJ">
+        <item>HJ/T 91–2002 地表水和污水监测技术规范</item>
+        <item>HJ 493–2009水质采样样品的保存和管理技术规定</item>
+    </string-array>
+
+    <string-array name="DBS_CDYJ">
+        <item>水温：GB/T 13195–1991水质 水温的测定 温度计或颠倒温度计测定法</item>
+        <item>pH：GB 6920–1986水质 pH值的测定 玻璃电极法</item>
+        <item>pH：便携式pH计法《水和废水监测分析方法》（第四版增补版)国家环保总局(2002年)</item>
+        <item>溶解氧：HJ 506–2009水质 溶解氧的测定 电化学探头法</item>
+        <item>透明度：塞氏盘法《水和废水监测分析方法》（第四版增补版）国家环保总局（2002年）</item>
+    </string-array>
+
+    <string-array name="DBS_JZD">
+        <item>4.00</item>
+        <item>6.86</item>
+        <item>9.18</item>
+    </string-array>
+
+    <string-array name="DBS_BZRY">
+        <item>4.00</item>
+        <item>6.86</item>
+        <item>9.18</item>
+    </string-array>
+
+    <string-array name="DBS_GDJJRQK">
+        <item>是</item>
+        <item>否</item>
+    </string-array>
+
+    <string-array name="HS_XH">
+        <item>Multi3420</item>
+        <item>HQ30d</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="HS_GDJJRQK">
+        <item>是</item>
+        <item>否</item>
     </string-array>
 
 </resources>

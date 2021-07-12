@@ -53,7 +53,10 @@ object ActivityUtil {
     /**
      * 关闭指定Activity
      */
-    @Deprecated("简化调用，使用ActivityUtil.finish(activity)即可", ReplaceWith("ActivityUtil.finish(activity)"))
+    @Deprecated(
+        "简化调用，使用ActivityUtil.finish(activity)即可",
+        ReplaceWith("ActivityUtil.finish(activity)")
+    )
     fun finishActivity(activity: Activity?) {
         if (activity != null) {
             activityStack.remove(activity)
@@ -109,6 +112,7 @@ object ActivityUtil {
             activityStack.remove(activity)
             activityStack.push(activity)
         }
+
         override fun onActivityStarted(activity: Activity) {}
         override fun onActivityResumed(activity: Activity) {}
         override fun onActivityPaused(activity: Activity) {}

@@ -2,12 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.sampling.SamplingFragment1">
+    tools:context=".ui.Sampling.SamplingFragment1">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_horizontal_margin4"
         tools:ignore="UselessParent">
 
         <LinearLayout
@@ -16,7 +17,7 @@
             android:orientation="vertical">
 
             <TableLayout
-                android:id="@+id/list_details_Fragment1"
+                android:id="@+id/data_sampling1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -34,7 +35,7 @@
                         android:text="实验室编号" />
 
                     <EditText
-                        android:id="@+id/details_LAB_NO"
+                        android:id="@+id/SYSBH"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
@@ -54,10 +55,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="样品类别" />
+                        android:text="样品类型" />
 
                     <Spinner
-                        android:id="@+id/details_SAMPLE_TYPE"
+                        android:id="@+id/YPLX"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
@@ -70,7 +71,7 @@
                     tools:ignore="SmallSp" />
 
                 <TableRow
-                    android:id="@+id/details_SAMPLE_TYPE_other"
+                    android:id="@+id/layout_YPLXQT"
                     android:background="@drawable/bg_view"
                     android:visibility="gone">
 
@@ -81,7 +82,7 @@
                         android:text="其它" />
 
                     <EditText
-                        android:id="@+id/details_SAMPLE_TYPe_other"
+                        android:id="@+id/YPLXQT"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3" />
@@ -102,7 +103,7 @@
                         android:text="委托单位" />
 
                     <EditText
-                        android:id="@+id/details_Client"
+                        android:id="@+id/WTDW"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3" />
@@ -122,7 +123,7 @@
                         android:text="采样依据" />
 
                     <Spinner
-                        android:id="@+id/details_1"
+                        android:id="@+id/CYYJ"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3" />
@@ -142,10 +143,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textStyle="bold"
                         android:gravity="center"
-                        android:text="便携式水质分析仪" />
-
+                        android:text="便携式水质分析仪"
+                        android:textStyle="bold" />
 
                     <TableRow>
 
@@ -156,7 +156,7 @@
                             android:text="设备型号" />
 
                         <Spinner
-                            android:id="@+id/details_2"
+                            android:id="@+id/SBXH"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="3" />
@@ -171,7 +171,7 @@
                             android:text="设备编号" />
 
                         <EditText
-                            android:id="@+id/details_3"
+                            android:id="@+id/SBBH"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="3" />
@@ -193,7 +193,7 @@
                         android:text="现场测定依据" />
 
                     <Spinner
-                        android:id="@+id/details_4"
+                        android:id="@+id/XCCDYJ"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3" />
@@ -213,7 +213,7 @@
                         android:text="废水流向" />
 
                     <Spinner
-                        android:id="@+id/details_5"
+                        android:id="@+id/FSLX"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3" />
@@ -225,7 +225,7 @@
                     tools:ignore="SmallSp" />
 
                 <TableRow
-                    android:id="@+id/details_5_other"
+                    android:id="@+id/layout_FSLXQT"
                     android:background="@drawable/bg_view"
 
                     android:visibility="gone">
@@ -237,7 +237,7 @@
                         android:text="其它" />
 
                     <EditText
-                        android:id="@+id/details_6"
+                        android:id="@+id/FSLXQT"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3" />
@@ -257,10 +257,11 @@
                         android:text="处理设施" />
 
                     <EditText
-                        android:id="@+id/details_7"
+                        android:id="@+id/CLSS"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3" />
+                        android:layout_weight="3"
+                        android:hint="处理设施" />
                 </TableRow>
 
                 <View
@@ -281,11 +282,140 @@
                 android:layout_height="3sp"
                 tools:ignore="SmallSp" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="采样点列表" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3sp"
+                tools:ignore="SmallSp" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_samplingInfo1_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2sp"
+                android:background="#cccccc"
+                tools:ignore="SmallSp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3sp"
+                tools:ignore="SmallSp" />
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_view">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="ph计校准"
+                    android:textStyle="bold" />
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="校准点" />
+
+                    <Spinner
+                        android:id="@+id/JZD"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+                </TableRow>
+
+            </TableLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3sp"
+                tools:ignore="SmallSp" />
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_view">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="标准溶液" />
+
+                    <Spinner
+                        android:id="@+id/BZRY"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="测定值" />
+
+                    <EditText
+                        android:id="@+id/CDZ"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+                </TableRow>
+
+            </TableLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3sp"
+                tools:ignore="SmallSp" />
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_view">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="样品现场处理"
+                    android:textStyle="bold" />
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="固定剂加入情况" />
+
+                    <Spinner
+                        android:id="@+id/GDJJRQK"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+                </TableRow>
+
+            </TableLayout>
 
         </LinearLayout>
 

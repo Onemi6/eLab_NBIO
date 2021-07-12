@@ -1,5 +1,6 @@
 package com.example.eLab_NBIO.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -14,7 +15,7 @@ import java.io.Writer
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CrashHandler : Thread.UncaughtExceptionHandler {
+object CrashHandler : Thread.UncaughtExceptionHandler {
     /**
      * 系统默认UncaughtExceptionHandler
      */
@@ -33,23 +34,20 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
     /**
      * 格式化时间
      */
+    @SuppressLint("ConstantLocale")
     private val format = SimpleDateFormat(
-        "yyyy-MM-dd-HH-mm-ss", Locale
-            .getDefault()
+        "yyyy-MM-dd-HH-mm-ss", Locale.getDefault()
     )
     private val TAG = "TEST" //this.getClass().getSimpleName();
 
     private var mInstance: CrashHandler? = null
 
-    private fun CrashHandler() {}
-
     /**
      * 获取CrashHandler实例
      */
-    @Synchronized
     fun getInstance(): CrashHandler? {
         if (null == mInstance) {
-            mInstance = com.example.eLab_NBIO.util.CrashHandler()
+            mInstance = CrashHandler
         }
         return mInstance
     }

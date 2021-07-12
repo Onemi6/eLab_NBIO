@@ -98,15 +98,15 @@ class LoginActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<MutableList<Lab>> {
                 override fun onComplete() {
-                    Log.i("Login", "onComplete")
+                    Log.i("getLabs", "onComplete")
                 }
 
                 override fun onSubscribe(d: Disposable) {
-                    Log.i("Login", "onSubscribe")
+                    Log.i("getLabs", "onSubscribe")
                 }
 
                 override fun onNext(t: MutableList<Lab>) {
-                    Log.i("Login", "onNext")
+                    Log.i("getLabs", "onNext")
                     for (l in t) {
                         labName.add(l)
                     }
@@ -121,7 +121,6 @@ class LoginActivity : AppCompatActivity() {
                     lab.adapter = adapterLab
                     adapterLab?.notifyDataSetChanged()
 
-                    //lab.setSelection(0)
                     val spinnerAdapter: SpinnerAdapter = lab.adapter
                     val k = spinnerAdapter.count
                     for (i in 0 until k) {
@@ -134,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.i("Login", "onError")
+                    Log.i("getLabs", e.message.toString())
                 }
 
             })
@@ -154,13 +153,6 @@ class LoginActivity : AppCompatActivity() {
 
         val item = lab.selectedItem as Lab
         map["lab"] = item.ID
-
-/*        for (l in labs) {
-            if (lab.selectedItem.toString() == l.NAME) {
-                map["lab"] = l.ID
-                break
-            }
-        }*/
 
         RetrofitService.getApiService()
             .login(map)
@@ -213,7 +205,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.i("Login", "onError")
+                    Log.i("Login", e.message.toString())
                 }
 
             })

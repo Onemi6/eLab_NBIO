@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.sampling.SamplingFragment4">
+    tools:context=".ui.Sampling.SamplingFragment4">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                         android:text="采样区域" />
 
                     <EditText
-                        android:id="@+id/details_1"
+                        android:id="@+id/CYQY"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
@@ -59,7 +59,7 @@
                         android:text="采样断面" />
 
                     <EditText
-                        android:id="@+id/details_2"
+                        android:id="@+id/CYDM"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
@@ -85,7 +85,7 @@
                         android:text="采样时间" />
 
                     <EditText
-                        android:id="@+id/details_3"
+                        android:id="@+id/CYSJ"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
@@ -111,7 +111,7 @@
                         android:text="编号" />
 
                     <EditText
-                        android:id="@+id/details_4"
+                        android:id="@+id/BH"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"

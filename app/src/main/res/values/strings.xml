@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">eLab_NBIO</string>
+    <string name="app_name">采样平台</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="menu_sampling">采样菜单</string>
@@ -12,16 +12,18 @@
     <string name="menu_sampling_type7">HM-BD-234浮游植物采样</string>
     <string name="menu_other">其他菜单</string>
     <string name="menu_logout">退出登录</string>
-    <string name="info_add">增加</string>
+    <string name="action_add">新增</string>
+    <string name="action_refresh">刷新</string>
     <string name="title_details">详细信息</string>
+    <string name="title_cyd">采样点信息</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="user_name">%1$s</string>
     <string name="app_versionName">采样平台V%1$s</string>
     <string name="prov_submit">暂存</string>
     <string name="submit">提交</string>
+    <string name="action_save">保存</string>
     <string name="upload_img">上传图片</string>
     <string name="selectImg">选择图片</string>
-    <string name="refresh">刷新</string>
     <string name="sampleTag">样品标签</string>
     <string name="select_title">付款凭证</string>
     <string name="select_have">已选择</string>
@@ -56,6 +58,13 @@
     <string name="paste">粘贴</string>
     <string name="signature_clear">清除</string>
     <string name="signature_save">保存</string>
-    <string name="imei_type">IMEI/MAC</string>
+
+    <string name="billName_type1">SHFS</string>
+    <string name="billName_type2">DBS</string>
+    <string name="billName_type3">HS</string>
+    <string name="billName_type4">CJDSW</string>
+    <string name="billName_type5">DXDQDW</string>
+    <string name="billName_type6">FYDW</string>
+    <string name="billName_type7">FYZW</string>
 
 </resources>

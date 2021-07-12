@@ -5,21 +5,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import com.example.eLab_NBIO.R
 import com.example.eLab_NBIO.adapter.MyViewPagerAdapter
-import com.example.eLab_NBIO.adapter.SamplingInfoAdapter
-import com.example.eLab_NBIO.models.SamplingInfo
-import com.example.eLab_NBIO.ui.sampling.*
+import com.example.eLab_NBIO.ui.Sampling.*
 import kotlinx.android.synthetic.main.activity_details.*
 
 class DetailsActivity : AppCompatActivity() {
 
     private var fragmentType = 0
     private lateinit var context: Context
-    private lateinit var samplingInfoRecyclerView: RecyclerView
-    private lateinit var samplingInfoAdapter: SamplingInfoAdapter
-    private var samplingInfoList: MutableList<SamplingInfo> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +39,8 @@ class DetailsActivity : AppCompatActivity() {
     private fun initView() {
         val intent = intent
         fragmentType = intent.getIntExtra("fragment_type", 0)
+        //position = intent.getIntExtra("position", -1)
+
         //Log.v("fragment_type", fragmentType.toString())
         toolbar_details.title = ""
         setSupportActionBar(toolbar_details)
@@ -54,7 +50,7 @@ class DetailsActivity : AppCompatActivity() {
         /*设置ToolBar标题，使用TestView显示*/
         tv_title_details.text = resources.getString(R.string.title_details)
         initFragments()
-        when (fragmentType) {
+        /*when (fragmentType) {
             1 -> {
                 view_pager.currentItem = 0
             }
@@ -76,36 +72,39 @@ class DetailsActivity : AppCompatActivity() {
             7 -> {
                 view_pager.currentItem = 6
             }
-        }
+        }*/
     }
 
     /**
      * 初始化Fragment
      */
     private fun initFragments() {
-        val viewPagerAdapter = MyViewPagerAdapter(supportFragmentManager).apply {
-            addFragment(SamplingFragment1())
-            addFragment(SamplingFragment2())
-            addFragment(SamplingFragment3())
-            addFragment(SamplingFragment4())
-            addFragment(SamplingFragment5())
-            addFragment(SamplingFragment6())
-            addFragment(SamplingFragment7())
+        val viewPagerAdapter = MyViewPagerAdapter(supportFragmentManager)
+        when (fragmentType) {
+            1 -> {
+                viewPagerAdapter.apply { addFragment(SamplingFragment1()) }
+            }
+            2 -> {
+                viewPagerAdapter.apply { addFragment(SamplingFragment2()) }
+            }
+            3 -> {
+                viewPagerAdapter.apply { addFragment(SamplingFragment3()) }
+            }
+            4 -> {
+                viewPagerAdapter.apply { addFragment(SamplingFragment4()) }
+            }
+            5 -> {
+                viewPagerAdapter.apply { addFragment(SamplingFragment5()) }
+            }
+            6 -> {
+                viewPagerAdapter.apply { addFragment(SamplingFragment6()) }
+            }
+            7 -> {
+                viewPagerAdapter.apply { addFragment(SamplingFragment7()) }
+            }
         }
         view_pager.offscreenPageLimit = 1
         view_pager.adapter = viewPagerAdapter
     }
 
-    //后期每次只加载一个Fragment，考虑使用父类的变量
-    fun getSamplingInfoRecyclerView(): RecyclerView {
-        return this.samplingInfoRecyclerView
-    }
-
-    fun getSamplingInfoList(): MutableList<SamplingInfo> {
-        return this.samplingInfoList
-    }
-
-    fun getSamplingInfoAdapter(): SamplingInfoAdapter {
-        return this.samplingInfoAdapter
-    }
 }
