@@ -43,12 +43,9 @@
     <string name="update_title">检测到新版本V%1$s</string>
     <string name="update_content">更新内容</string>
     <string name="update_btn">马上升级</string>
-    <string name="img_type_1">现场照片</string>
-    <string name="img_type_2">签名</string>
-    <string name="img_type_3">告知书&amp;抽样单</string>
+    <string name="img_type">已上传图片</string>
     <string name="btn_upload_img">上传图片</string>
     <string name="about">关于</string>
-    <string name="unit_name">宁波市食品检验检测研究院</string>
     <string name="settings">设置</string>
     <string name="share">分享</string>
     <string name="feedback">反馈</string>
@@ -58,6 +55,7 @@
     <string name="paste">粘贴</string>
     <string name="signature_clear">清除</string>
     <string name="signature_save">保存</string>
+    <string name="img_desc">Image Description</string>
 
     <string name="billName_type1">SHFS</string>
     <string name="billName_type2">DBS</string>

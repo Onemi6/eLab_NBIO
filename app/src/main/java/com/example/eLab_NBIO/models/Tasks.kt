@@ -1,17 +1,18 @@
 package com.example.eLab_NBIO.models
 
-import com.example.eLab_NBIO.models.Sampling.*
+import com.example.eLab_NBIO.models.sampling.*
 import java.util.*
 
 class Tasks {
     companion object {
-        var taskList1: MutableList<Sampling1> = ArrayList()
-        var taskList2: MutableList<Sampling2> = ArrayList()
-        var taskList3: MutableList<Sampling3> = ArrayList()
-        var taskList4: MutableList<Sampling4> = ArrayList()
-        var taskList5: MutableList<Sampling5> = ArrayList()
-        var taskList6: MutableList<Sampling6> = ArrayList()
-        var taskList7: MutableList<Sampling7> = ArrayList()
+        var taskList: MutableList<Task> = ArrayList()
         var position: Int = -1
+        var sampling1: Sampling1 = Sampling1()
+        var sampling2: Sampling2 = Sampling2()
+        var sampling3: Sampling3 = Sampling3()
+        var sampling4: Sampling4 = Sampling4()
+        var sampling5: Sampling5 = Sampling5()
+        var sampling6: Sampling6 = Sampling6()
+        var sampling7: Sampling7 = Sampling7()
     }
 }

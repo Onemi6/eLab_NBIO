@@ -67,7 +67,7 @@ object ActivityUtil {
     /**
      * 关闭指定Activity
      */
-    fun finish(activity: Activity?) {
+    private fun finish(activity: Activity?) {
         if (activity != null) {
             activityStack.remove(activity)
             activity.finish()

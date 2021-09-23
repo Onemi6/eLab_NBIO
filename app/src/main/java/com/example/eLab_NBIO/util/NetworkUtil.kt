@@ -1,10 +1,23 @@
 package com.example.eLab_NBIO.util
 
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
+import android.os.Handler
 import android.util.Log
+import com.dou361.dialogui.DialogUIUtils
+import com.example.eLab_NBIO.http.RetrofitService
+import com.example.eLab_NBIO.models.Lab
+import com.example.eLab_NBIO.models.Login
+import com.example.eLab_NBIO.ui.MainActivity
+import com.google.android.material.snackbar.Snackbar
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_login.*
 
 object NetworkUtil {
     /**

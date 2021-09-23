@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.Sampling.SamplingFragment5">
+    tools:context=".ui.sampling.SamplingFragment5">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -21,6 +21,72 @@
                 android:layout_height="wrap_content"
                 android:stretchColumns="*"
                 tools:ignore="UselessParent">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="样品编号" />
+
+                    <TextView
+                        android:id="@+id/SAMPLE_NO"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        tools:ignore="LabelFor" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="采样站位" />
+
+                    <TextView
+                        android:id="@+id/SAMPLING_POS"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        tools:ignore="LabelFor" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3sp"
+                    tools:ignore="SmallSp" />
+
+                <TableRow android:background="@drawable/bg_view">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="样品标记" />
+
+                    <TextView
+                        android:id="@+id/SAMPLE_MARK"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints=""
+                        tools:ignore="LabelFor" />
+                </TableRow>
 
                 <View
                     android:layout_width="match_parent"
@@ -84,17 +150,11 @@
                         android:layout_weight="1"
                         android:text="采样时间" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/CYSJ"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:autofillHints=""
-                        android:imeOptions="actionNext"
-                        android:inputType="text"
-                        android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
-                        android:singleLine="true"
-                        tools:ignore="LabelFor,TextFields" />
+                        android:layout_weight="3"/>
                 </TableRow>
 
                 <View
@@ -132,6 +192,17 @@
                     android:background="#cccccc"
                     tools:ignore="SmallSp" />
             </TableLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3sp"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="采样点列表" />
 
             <View
                 android:layout_width="match_parent"

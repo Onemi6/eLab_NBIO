@@ -1,7 +1,7 @@
 package com.example.eLab_NBIO.models
 
 class Login {
-    val ID: Int? = null
+    val ID: Int = -1
     val NAME: String? = null
     val LOGIN_NAME: String? = null
     val PASSWORD: String? = null

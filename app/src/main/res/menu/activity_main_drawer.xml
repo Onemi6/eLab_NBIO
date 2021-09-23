@@ -5,7 +5,7 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
+<!--        <item
             android:id="@+id/nav_sampling"
             android:title="@string/menu_sampling">
             <menu>
@@ -38,7 +38,7 @@
                     android:icon="@drawable/ic_menu_menu_24dp"
                     android:title="@string/menu_sampling_type7" />
             </menu>
-        </item>
+        </item>-->
 
         <item android:title="@string/menu_other">
             <menu>

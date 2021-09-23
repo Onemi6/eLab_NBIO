@@ -23,15 +23,6 @@
                 android:background="@drawable/bg_view"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/samplingInfo_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:paddingLeft="@dimen/activity_horizontal_margin3"
-                    android:paddingRight="@dimen/activity_horizontal_margin3"
-                    android:text="序号" />
-
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

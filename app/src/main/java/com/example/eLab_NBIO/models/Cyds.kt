@@ -1,6 +1,6 @@
 package com.example.eLab_NBIO.models
 
-import com.example.eLab_NBIO.models.SamplingCyd.*
+import com.example.eLab_NBIO.models.samplingCyd.*
 import java.util.*
 
 class Cyds {

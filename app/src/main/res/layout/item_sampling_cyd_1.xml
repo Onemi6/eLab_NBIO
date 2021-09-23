@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView
@@ -56,14 +57,12 @@
                             android:layout_weight="1"
                             android:text="采样时间" />
 
-                        <EditText
+                        <TextView
                             android:id="@+id/CYSJ"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="4"
-                            android:autofillHints=""
-                            android:inputType="text"
-                            tools:ignore="LabelFor" />
+                            android:layout_weight="4"/>
+
                     </TableRow>
 
                     <TableRow>

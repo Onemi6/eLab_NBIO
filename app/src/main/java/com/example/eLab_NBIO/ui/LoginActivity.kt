@@ -175,29 +175,24 @@ class LoginActivity : AppCompatActivity() {
                         } else {
                             SpValueUtil.setBoolean("isRemember", false)
                         }
-                        SpValueUtil.setString("ID", t.ID.toString())
+                        SpValueUtil.setInt("ID", t.ID)
                         SpValueUtil.setString("NAME", t.NAME)
                         SpValueUtil.setString("LOGIN_NAME", t.LOGIN_NAME)
                         SpValueUtil.setString("PASSWORD", passwordStr)
                         SpValueUtil.setString("LAB_ID", t.LAB_ID)
                         SpValueUtil.setString("token", t.token)
 
-                        if (loginType == 1) {
-                            Handler().postDelayed({ finish() }, 500) // 延时1s执行
-                        } else if (loginType == -1) {
-                            //DialogUIUtils.dismiss(dialogLogin)
-                            Snackbar.make(btn_login, "登录成功", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show()
-                            Handler().postDelayed({
-                                startActivity(
-                                    Intent(
-                                        this@LoginActivity,
-                                        MainActivity::class.java
-                                    )
+                        Snackbar.make(btn_login, "登录成功", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show()
+                        Handler().postDelayed({
+                            startActivity(
+                                Intent(
+                                    this@LoginActivity,
+                                    MainActivity::class.java
                                 )
-                                finish()
-                            }, 3000) //延时3s执行
-                        }
+                            )
+                            finish()
+                        }, 3000) //延时3s执行
                     } else {
                         account.requestFocus()
                         account.error = t.message

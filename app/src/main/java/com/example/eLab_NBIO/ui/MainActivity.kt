@@ -16,9 +16,10 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dou361.dialogui.DialogUIUtils
 import com.example.eLab_NBIO.R
-import com.example.eLab_NBIO.adapter.SamplingAdapter
+import com.example.eLab_NBIO.adapter.TaskAdapter
 import com.example.eLab_NBIO.http.RetrofitService
-import com.example.eLab_NBIO.models.Sampling.*
+import com.example.eLab_NBIO.models.Task
+import com.example.eLab_NBIO.models.sampling.*
 import com.example.eLab_NBIO.models.Tasks
 import com.example.eLab_NBIO.util.*
 import com.google.android.material.snackbar.Snackbar
@@ -32,37 +33,15 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.toolbar_layout.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RecyclerItemClickListener {
 
     private val requestLocationPermissionCode = 100
     private var mExitTime: Long = 0
     private var _context: Context? = null
-    private lateinit var billName: String
-    private var type: Int = 0
-    private lateinit var sampling1Adapter: SamplingAdapter<Sampling1>
-    private var itemList1: MutableList<Sampling1>? = ArrayList(0)
-
-    private lateinit var sampling2Adapter: SamplingAdapter<Sampling2>
-    private var itemList2: MutableList<Sampling2>? = ArrayList(0)
-
-    private lateinit var sampling3Adapter: SamplingAdapter<Sampling3>
-    private var itemList3: MutableList<Sampling3>? = ArrayList(0)
-
-    private lateinit var sampling4Adapter: SamplingAdapter<Sampling4>
-    private var itemList4: MutableList<Sampling4>? = ArrayList(0)
-
-    private lateinit var sampling5Adapter: SamplingAdapter<Sampling5>
-    private var itemList5: MutableList<Sampling5>? = ArrayList(0)
-
-    private lateinit var sampling6Adapter: SamplingAdapter<Sampling6>
-    private var itemList6: MutableList<Sampling6>? = ArrayList(0)
-
-    private lateinit var sampling7Adapter: SamplingAdapter<Sampling7>
-    private var itemList7: MutableList<Sampling7>? = ArrayList(0)
-
+    private lateinit var taskAdapter: TaskAdapter<Task>
+    private lateinit var task: Task
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         _context = this
         CrashHandler.getInstance()?.init(_context)
         initView()
-        viewAction()
         /*设置监听器*/
         setListener()
     }
@@ -86,46 +64,41 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         /*设置ToolBar标题，使用TestView显示*/
-        tv_title_main.text = resources.getString(R.string.menu_sampling_type1)
+        //tv_title_main.text = resources.getString(R.string.menu_sampling_type1)
 
         val headerView: View = nav_view.getHeaderView(0)
         val tvUserName = headerView.findViewById<TextView>(R.id.tv_user_name)
         val tvAppVersionName = headerView.findViewById<TextView>(R.id.tv_app_versionName)
         val name: String = SpValueUtil.getString("NAME")
         val versionName: String? = Util.getVersionName()
-        tvUserName.text = String.format(resources.getString(R.string.user_name), name)
-        tvAppVersionName.text = String.format(
-            resources.getString(R.string.app_versionName), versionName
-        )
-        /*设置Drawerlayout的开关,并且和Home图标联动*/
-        val mToggle = ActionBarDrawerToggle(this, drawer_layout, toolbar_main, 0, 0)
-        drawer_layout.addDrawerListener(mToggle)
-        /*同步drawerlayout的状态*/
-        mToggle.syncState()
+        if (name.isNotEmpty()) {
+            tvUserName.text = String.format(resources.getString(R.string.user_name), name)
+            tvAppVersionName.text = String.format(
+                resources.getString(R.string.app_versionName), versionName
+            )
+            /*设置Drawerlayout的开关,并且和Home图标联动*/
+            val mToggle = ActionBarDrawerToggle(this, drawer_layout, toolbar_main, 0, 0)
+            drawer_layout.addDrawerListener(mToggle)
+            /*同步drawerlayout的状态*/
+            mToggle.syncState()
 
-        //初始化RecyclerView
-        rv_mainInfo_add.setHasFixedSize(true)
-        rv_mainInfo_add.isNestedScrollingEnabled = false
+            //初始化RecyclerView
+            rv_mainInfo_add.setHasFixedSize(true)
+            rv_mainInfo_add.isNestedScrollingEnabled = false
 
-        //创建LinearLayoutManager 对象 这里使用 LinearLayoutManager 是线性布局的意思
-        val layoutManager = LinearLayoutManager(_context)
-        //设置RecyclerView 布局
-        rv_mainInfo_add.layoutManager = layoutManager
+            //创建LinearLayoutManager 对象 这里使用 LinearLayoutManager 是线性布局的意思
+            val layoutManager = LinearLayoutManager(_context)
+            //设置RecyclerView 布局
+            rv_mainInfo_add.layoutManager = layoutManager
 
-        //设置Adapter
-        sampling1Adapter = SamplingAdapter(_context, itemList1, 1)
-        sampling2Adapter = SamplingAdapter(_context, itemList2, 2)
-        sampling3Adapter = SamplingAdapter(_context, itemList3, 3)
-        sampling4Adapter = SamplingAdapter(_context, itemList4, 4)
-        sampling5Adapter = SamplingAdapter(_context, itemList5, 5)
-        sampling6Adapter = SamplingAdapter(_context, itemList6, 6)
-        sampling7Adapter = SamplingAdapter(_context, itemList7, 7)
-        //默认加载1
-        rv_mainInfo_add.adapter = sampling1Adapter
-
-        setType(1)
-        //showLocation()
-        initLocation()
+            taskAdapter = TaskAdapter(_context, Tasks.taskList, this)
+            rv_mainInfo_add.adapter = taskAdapter
+            attemptGetTasks()
+            //showLocation()
+            initLocation()
+        } else {
+            toLogin()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -137,42 +110,41 @@ class MainActivity : AppCompatActivity() {
     private fun setListener() {
         nav_view.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_sampling1 -> {
-                    setType(1)
-                }
-                R.id.nav_sampling2 -> {
-                    setType(2)
-                }
-                R.id.nav_sampling3 -> {
-                    setType(3)
-                }
-                R.id.nav_sampling4 -> {
-                    setType(4)
-                }
-                R.id.nav_sampling5 -> {
-                    setType(5)
-                }
-                R.id.nav_sampling6 -> {
-                    setType(6)
-                }
-                R.id.nav_sampling7 -> {
-                    setType(7)
-                }
+                /*               R.id.nav_sampling1 -> {
+                                   setType(1)
+                                   attemptGetSamplings()
+                               }
+                               R.id.nav_sampling2 -> {
+                                   setType(2)
+                                   attemptGetSamplings()
+                               }
+                               R.id.nav_sampling3 -> {
+                                   setType(3)
+                                   attemptGetSamplings()
+                               }
+                               R.id.nav_sampling4 -> {
+                                   setType(4)
+                                   attemptGetSamplings()
+                               }
+                               R.id.nav_sampling5 -> {
+                                   setType(5)
+                                   attemptGetSamplings()
+                               }
+                               R.id.nav_sampling6 -> {
+                                   setType(6)
+                                   attemptGetSamplings()
+                               }
+                               R.id.nav_sampling7 -> {
+                                   setType(7)
+                                   attemptGetSamplings()
+                               }*/
                 R.id.nav_logout -> {
                     val builder =
                         androidx.appcompat.app.AlertDialog.Builder(this@MainActivity).apply {
                             setTitle("提示")
                             setMessage("确定退出？")
                             setPositiveButton("确定") { _, _ ->
-/*                            SpUtilKt.setBoolean(MyConfig.IS_LOGIN, false)
-                            SpUtilKt.removeByKey(MyConfig.COOKIE)*/
-                                val intentLogin = Intent()
-                                intentLogin.setClass(
-                                    this@MainActivity,
-                                    LoginActivity::class.java
-                                )
-                                intentLogin.putExtra("login_type", -1)
-                                startActivity(intentLogin)
+                                toLogin()
                             }
                             setNegativeButton("取消", null)
                         }
@@ -186,49 +158,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_add -> {
-                when (type) {
-                    1 -> {
-                        val task = Sampling1()
-                        Tasks.taskList1.add(task)
-                        sampling1Adapter.changList(Tasks.taskList1)
-                    }
-                    2 -> {
-                        val task = Sampling2()
-                        Tasks.taskList2.add(task)
-                        sampling2Adapter.changList(Tasks.taskList2)
-                    }
-                    3 -> {
-                        val task = Sampling3()
-                        Tasks.taskList3.add(task)
-                        sampling3Adapter.changList(Tasks.taskList3)
-                    }
-                    4 -> {
-                        val task = Sampling4()
-                        Tasks.taskList4.add(task)
-                        sampling4Adapter.changList(Tasks.taskList4)
-                    }
-                    5 -> {
-                        val task = Sampling5()
-                        Tasks.taskList5.add(task)
-                        sampling5Adapter.changList(Tasks.taskList5)
-                    }
-                    6 -> {
-                        val task = Sampling6()
-                        Tasks.taskList6.add(task)
-                        sampling6Adapter.changList(Tasks.taskList6)
-                    }
-                    7 -> {
-                        val task = Sampling7()
-                        Tasks.taskList7.add(task)
-                        sampling7Adapter.changList(Tasks.taskList7)
-                    }
-                }
-            }
             R.id.action_refresh -> {
-                attemptGetSamplings()
-            }
-            else -> {
+                //attemptGetSamplings()
+                attemptGetTasks()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -315,343 +247,297 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun attemptGetSamplings() {
+    private fun attemptGetTasks() {
         val dialogLogin = DialogUIUtils.showLoading(
-            _context, "刷新任务中...", false, true,
+            _context, "获取任务中...", false, true,
             false,
             false
         )
         dialogLogin.show()
-        when (type) {
-            1 -> {
-                RetrofitService.getApiService()
-                    .getSamplings1(billName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<MutableList<Sampling1>> {
-                        override fun onComplete() {
-                            Log.i("getSamplings", "onComplete")
-                        }
+        val userId: Int = SpValueUtil.getInt("ID")
+        RetrofitService.getApiService()
+            .getTasks(userId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<MutableList<Task>> {
+                override fun onComplete() {
+                    Log.i("getTasks", "onComplete")
+                }
 
-                        override fun onSubscribe(d: Disposable) {
-                            Log.i("getSamplings", "onSubscribe")
-                        }
+                override fun onSubscribe(d: Disposable) {
+                    Log.i("getTasks", "onSubscribe")
+                }
 
-                        override fun onNext(t: MutableList<Sampling1>) {
-                            Log.i("getSamplings", "onNext")
-                            rv_mainInfo_add.adapter = sampling1Adapter
-                            itemList1 = t
-                            sampling1Adapter.changList(itemList1)
+                override fun onNext(t: MutableList<Task>) {
+                    Log.i("getTasks", "onNext")
+                    Tasks.taskList = t
+                    taskAdapter.changList(Tasks.taskList)
+                }
 
-                            Tasks.taskList1 = itemList1 as MutableList<Sampling1>
-                        }
-
-                        override fun onError(e: Throwable) {
-                            Log.i("getSamplings", e.message.toString())
-                        }
-                    })
-            }
-            2 -> {
-                RetrofitService.getApiService()
-                    .getSamplings2(billName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<MutableList<Sampling2>> {
-                        override fun onComplete() {
-                            Log.i("getSamplings", "onComplete")
-                        }
-
-                        override fun onSubscribe(d: Disposable) {
-                            Log.i("getSamplings", "onSubscribe")
-                        }
-
-                        override fun onNext(t: MutableList<Sampling2>) {
-                            Log.i("getSamplings", "onNext")
-                            rv_mainInfo_add.adapter = sampling2Adapter
-                            itemList2 = t
-                            sampling2Adapter.changList(itemList2)
-                        }
-
-                        override fun onError(e: Throwable) {
-                            Log.i("getSamplings", e.message.toString())
-                        }
-                    })
-            }
-            3 -> {
-                RetrofitService.getApiService()
-                    .getSamplings3(billName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<MutableList<Sampling3>> {
-                        override fun onComplete() {
-                            Log.i("getSamplings", "onComplete")
-                        }
-
-                        override fun onSubscribe(d: Disposable) {
-                            Log.i("getSamplings", "onSubscribe")
-                        }
-
-                        override fun onNext(t: MutableList<Sampling3>) {
-                            Log.i("getSamplings", "onNext")
-                            rv_mainInfo_add.adapter = sampling3Adapter
-                            itemList3 = t
-                            sampling3Adapter.changList(itemList3)
-                        }
-
-                        override fun onError(e: Throwable) {
-                            Log.i("getSamplings", e.message.toString())
-                        }
-                    })
-            }
-            4 -> {
-                RetrofitService.getApiService()
-                    .getSamplings4(billName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<MutableList<Sampling4>> {
-                        override fun onComplete() {
-                            Log.i("getSamplings", "onComplete")
-                        }
-
-                        override fun onSubscribe(d: Disposable) {
-                            Log.i("getSamplings", "onSubscribe")
-                        }
-
-                        override fun onNext(t: MutableList<Sampling4>) {
-                            Log.i("getSamplings", "onNext")
-                            rv_mainInfo_add.adapter = sampling4Adapter
-                            itemList4 = t
-                            sampling4Adapter.changList(itemList4)
-                        }
-
-                        override fun onError(e: Throwable) {
-                            Log.i("getSamplings", e.message.toString())
-                        }
-                    })
-            }
-            5 -> {
-                RetrofitService.getApiService()
-                    .getSamplings5(billName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<MutableList<Sampling5>> {
-                        override fun onComplete() {
-                            Log.i("getSamplings", "onComplete")
-                        }
-
-                        override fun onSubscribe(d: Disposable) {
-                            Log.i("getSamplings", "onSubscribe")
-                        }
-
-                        override fun onNext(t: MutableList<Sampling5>) {
-                            Log.i("getSamplings", "onNext")
-                            rv_mainInfo_add.adapter = sampling5Adapter
-                            itemList5 = t
-                            sampling5Adapter.changList(itemList5)
-                        }
-
-                        override fun onError(e: Throwable) {
-                            Log.i("getSamplings", e.message.toString())
-                        }
-                    })
-            }
-            6 -> {
-                RetrofitService.getApiService()
-                    .getSamplings6(billName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<MutableList<Sampling6>> {
-                        override fun onComplete() {
-                            Log.i("getSamplings", "onComplete")
-                        }
-
-                        override fun onSubscribe(d: Disposable) {
-                            Log.i("getSamplings", "onSubscribe")
-                        }
-
-                        override fun onNext(t: MutableList<Sampling6>) {
-                            Log.i("getSamplings", "onNext")
-                            rv_mainInfo_add.adapter = sampling6Adapter
-                            itemList6 = t
-                            sampling6Adapter.changList(itemList6)
-                        }
-
-                        override fun onError(e: Throwable) {
-                            Log.i("getSamplings", e.message.toString())
-                        }
-                    })
-            }
-            7 -> {
-                RetrofitService.getApiService()
-                    .getSamplings7(billName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<MutableList<Sampling7>> {
-                        override fun onComplete() {
-                            Log.i("getSamplings", "onComplete")
-                        }
-
-                        override fun onSubscribe(d: Disposable) {
-                            Log.i("getSamplings", "onSubscribe")
-                        }
-
-                        override fun onNext(t: MutableList<Sampling7>) {
-                            Log.i("getSamplings", "onNext")
-                            rv_mainInfo_add.adapter = sampling7Adapter
-                            itemList7 = t
-                            sampling7Adapter.changList(itemList7)
-                        }
-
-                        override fun onError(e: Throwable) {
-                            Log.i("getSamplings", e.message.toString())
-                        }
-                    })
-            }
-
-        }
+                override fun onError(e: Throwable) {
+                    Log.i("getTasks", e.message.toString())
+                    if (e.message.toString() == "HTTP 401 Unauthorized") {
+                        TokenUtil.attemptToken()
+                    }
+                }
+            })
         DialogUIUtils.dismiss(dialogLogin)
     }
 
-    private fun setType(t: Int) {
-        when (t) {
-            1 -> {
-                type = 1
-                billName = resources.getString(R.string.billName_type1)
-                tv_title_main.text = resources.getString(R.string.menu_sampling_type1)
-            }
-            2 -> {
-                type = 2
-                billName = resources.getString(R.string.billName_type2)
-                tv_title_main.text = resources.getString(R.string.menu_sampling_type2)
-            }
-            3 -> {
-                type = 3
-                billName = resources.getString(R.string.billName_type3)
-                tv_title_main.text = resources.getString(R.string.menu_sampling_type3)
-            }
-            4 -> {
-                type = 4
-                billName = resources.getString(R.string.billName_type4)
-                tv_title_main.text = resources.getString(R.string.menu_sampling_type4)
-            }
-            5 -> {
-                type = 5
-                billName = resources.getString(R.string.billName_type5)
-                tv_title_main.text = resources.getString(R.string.menu_sampling_type5)
-            }
-            6 -> {
-                type = 6
-                billName = resources.getString(R.string.billName_type6)
-                tv_title_main.text = resources.getString(R.string.menu_sampling_type6)
-            }
-            7 -> {
-                type = 7
-                billName = resources.getString(R.string.billName_type7)
-                tv_title_main.text = resources.getString(R.string.menu_sampling_type7)
-            }
-        }
+    private fun toLogin() {
+        val intentLogin = Intent()
+        intentLogin.setClass(
+            this@MainActivity,
+            LoginActivity::class.java
+        )
+        startActivity(intentLogin)
+        finish()
+    }
+
+    override fun onRecyclerViewItemClick(view: View, position: Int) {
+        setPos(position)
+    }
+
+    private fun setPos(pos: Int) {
+        Tasks.position = pos
+        task = Tasks.taskList[Tasks.position]
         attemptGetSamplings()
     }
 
-    private fun viewAction() {
-        sampling1Adapter.setOnKotlinItemClickListener(object :
-            SamplingAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                Log.v("position", position.toString())
-                Tasks.position = position
-                val intentDetails = Intent()
-                intentDetails.setClass(
-                    this@MainActivity,
-                    DetailsActivity::class.java
-                )
-                intentDetails.putExtra("fragment_type", type)
-                //intentDetails.putExtra("position", position)
-                startActivity(intentDetails)
+    private fun attemptGetSamplings() {
+        when (task.ORIGIN_RECORD_MODULE_SAMPLING_ID) {
+            1 -> {
+                RetrofitService.getApiService()
+                    .getSamplingOrigin1(
+                        task.ORIGIN_RECORD_MODULE_SAMPLING_TYPE,
+                        task.ORIGIN_RECORD_SAMPLING_ID
+                    )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Sampling1> {
+                        override fun onComplete() {
+                            Log.i("getSamplings1", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings2", "onSubscribe")
+                        }
+
+                        override fun onNext(t: Sampling1) {
+                            Log.i("getSamplings3", "onNext")
+                            Tasks.sampling1 = t
+                            toDetails()
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings4", e.message.toString())
+                            if (e.message.toString() == "HTTP 401 Unauthorized") {
+                                TokenUtil.attemptToken()
+                            }
+                        }
+                    })
             }
-        })
-        sampling2Adapter.setOnKotlinItemClickListener(object :
-            SamplingAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                Tasks.position = position
-                val intentDetails = Intent()
-                intentDetails.setClass(
-                    this@MainActivity,
-                    DetailsActivity::class.java
-                )
-                intentDetails.putExtra("fragment_type", type)
-                intentDetails.putExtra("position", position)
-                startActivity(intentDetails)
+            2 -> {
+                RetrofitService.getApiService()
+                    .getSamplingOrigin2(
+                        task.ORIGIN_RECORD_MODULE_SAMPLING_TYPE,
+                        task.ORIGIN_RECORD_SAMPLING_ID
+                    )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Sampling2> {
+                        override fun onComplete() {
+                            Log.i("getSamplings1", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings2", "onSubscribe")
+                        }
+
+                        override fun onNext(t: Sampling2) {
+                            Log.i("getSamplings3", "onNext")
+                            Tasks.sampling2 = t
+                            toDetails()
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings4", e.message.toString())
+                            if (e.message.toString() == "HTTP 401 Unauthorized") {
+                                TokenUtil.attemptToken()
+                            }
+                        }
+                    })
             }
-        })
-        sampling3Adapter.setOnKotlinItemClickListener(object :
-            SamplingAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                Tasks.position = position
-                val intentDetails = Intent()
-                intentDetails.setClass(
-                    this@MainActivity,
-                    DetailsActivity::class.java
-                )
-                intentDetails.putExtra("fragment_type", type)
-                intentDetails.putExtra("position", position)
-                startActivity(intentDetails)
+            3 -> {
+                RetrofitService.getApiService()
+                    .getSamplingOrigin3(
+                        task.ORIGIN_RECORD_MODULE_SAMPLING_TYPE,
+                        task.ORIGIN_RECORD_SAMPLING_ID
+                    )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Sampling3> {
+                        override fun onComplete() {
+                            Log.i("getSamplings1", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings2", "onSubscribe")
+                        }
+
+                        override fun onNext(t: Sampling3) {
+                            Log.i("getSamplings3", "onNext")
+                            Tasks.sampling3 = t
+                            toDetails()
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings4", e.message.toString())
+                            if (e.message.toString() == "HTTP 401 Unauthorized") {
+                                TokenUtil.attemptToken()
+                            }
+                        }
+                    })
             }
-        })
-        sampling4Adapter.setOnKotlinItemClickListener(object :
-            SamplingAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                Tasks.position = position
-                val intentDetails = Intent()
-                intentDetails.setClass(
-                    this@MainActivity,
-                    DetailsActivity::class.java
-                )
-                intentDetails.putExtra("fragment_type", type)
-                intentDetails.putExtra("position", position)
-                startActivity(intentDetails)
+            4 -> {
+                RetrofitService.getApiService()
+                    .getSamplingOrigin4(
+                        task.ORIGIN_RECORD_MODULE_SAMPLING_TYPE,
+                        task.ORIGIN_RECORD_SAMPLING_ID
+                    )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Sampling4> {
+                        override fun onComplete() {
+                            Log.i("getSamplings1", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings2", "onSubscribe")
+                        }
+
+                        override fun onNext(t: Sampling4) {
+                            Log.i("getSamplings3", "onNext")
+                            Tasks.sampling4 = t
+                            toDetails()
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings4", e.message.toString())
+                            if (e.message.toString() == "HTTP 401 Unauthorized") {
+                                TokenUtil.attemptToken()
+                            }
+                        }
+                    })
             }
-        })
-        sampling5Adapter.setOnKotlinItemClickListener(object :
-            SamplingAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                Tasks.position = position
-                val intentDetails = Intent()
-                intentDetails.setClass(
-                    this@MainActivity,
-                    DetailsActivity::class.java
-                )
-                intentDetails.putExtra("fragment_type", type)
-                intentDetails.putExtra("position", position)
-                startActivity(intentDetails)
+            5 -> {
+                RetrofitService.getApiService()
+                    .getSamplingOrigin5(
+                        task.ORIGIN_RECORD_MODULE_SAMPLING_TYPE,
+                        task.ORIGIN_RECORD_SAMPLING_ID
+                    )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Sampling5> {
+                        override fun onComplete() {
+                            Log.i("getSamplings1", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings2", "onSubscribe")
+                        }
+
+                        override fun onNext(t: Sampling5) {
+                            Log.i("getSamplings3", "onNext")
+                            toDetails()
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings4", e.message.toString())
+                            if (e.message.toString() == "HTTP 401 Unauthorized") {
+                                TokenUtil.attemptToken()
+                            }
+                        }
+                    })
             }
-        })
-        sampling6Adapter.setOnKotlinItemClickListener(object :
-            SamplingAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                Tasks.position = position
-                val intentDetails = Intent()
-                intentDetails.setClass(
-                    this@MainActivity,
-                    DetailsActivity::class.java
-                )
-                intentDetails.putExtra("fragment_type", type)
-                intentDetails.putExtra("position", position)
-                startActivity(intentDetails)
+            6 -> {
+                RetrofitService.getApiService()
+                    .getSamplingOrigin6(
+                        task.ORIGIN_RECORD_MODULE_SAMPLING_TYPE,
+                        task.ORIGIN_RECORD_SAMPLING_ID
+                    )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Sampling6> {
+                        override fun onComplete() {
+                            Log.i("getSamplings1", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings2", "onSubscribe")
+                        }
+
+                        override fun onNext(t: Sampling6) {
+                            Log.i("getSamplings3", "onNext")
+                            Tasks.sampling6 = t
+                            toDetails()
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings4", e.message.toString())
+                            if (e.message.toString() == "HTTP 401 Unauthorized") {
+                                TokenUtil.attemptToken()
+                            }
+                        }
+                    })
             }
-        })
-        sampling7Adapter.setOnKotlinItemClickListener(object :
-            SamplingAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                Tasks.position = position
-                val intentDetails = Intent()
-                intentDetails.setClass(
-                    this@MainActivity,
-                    DetailsActivity::class.java
-                )
-                intentDetails.putExtra("fragment_type", type)
-                intentDetails.putExtra("position", position)
-                startActivity(intentDetails)
+            7 -> {
+                RetrofitService.getApiService()
+                    .getSamplingOrigin7(
+                        task.ORIGIN_RECORD_MODULE_SAMPLING_TYPE,
+                        task.ORIGIN_RECORD_SAMPLING_ID
+                    )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Sampling7> {
+                        override fun onComplete() {
+                            Log.i("getSamplings1", "onComplete")
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            Log.i("getSamplings2", "onSubscribe")
+                        }
+
+                        override fun onNext(t: Sampling7) {
+                            Log.i("getSamplings3", "onNext")
+                            Tasks.sampling7 = t
+                            toDetails()
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.i("getSamplings4", e.message.toString())
+                            if (e.message.toString() == "HTTP 401 Unauthorized") {
+                                TokenUtil.attemptToken()
+                            }
+                        }
+                    })
             }
-        })
+            else ->{
+                Snackbar.make(
+                    toolbar_main, "当前任务没有对应的记录模板!",
+                    Snackbar.LENGTH_LONG
+                ).setAction("Action", null)
+                    .show()
+            }
+        }
+    }
+
+    private fun toDetails() {
+        val intentDetails = Intent()
+        intentDetails.setClass(
+            this@MainActivity,
+            DetailsActivity::class.java
+        )
+        startActivity(intentDetails)
     }
 }

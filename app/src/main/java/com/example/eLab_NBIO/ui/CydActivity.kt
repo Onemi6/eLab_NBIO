@@ -7,13 +7,14 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eLab_NBIO.R
 import com.example.eLab_NBIO.adapter.MyViewPagerAdapter
-import com.example.eLab_NBIO.ui.SamplingCyd.*
+import com.example.eLab_NBIO.models.Task
+import com.example.eLab_NBIO.models.Tasks
+import com.example.eLab_NBIO.ui.samplingCyd.*
 import kotlinx.android.synthetic.main.activity_cyd.*
 
 class CydActivity : AppCompatActivity() {
-
-    private var cydType = 0
     private lateinit var context: Context
+    private lateinit var task: Task
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +38,6 @@ class CydActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        val intent = intent
-        cydType = intent.getIntExtra("cydType", 0)
-
         toolbar_cyd.title = ""
         setSupportActionBar(toolbar_cyd)
         /*显示Home图标*/
@@ -52,7 +50,8 @@ class CydActivity : AppCompatActivity() {
 
     private fun initFragments() {
         val viewPagerAdapter = MyViewPagerAdapter(supportFragmentManager)
-        when (cydType) {
+        task = Tasks.taskList[Tasks.position]
+        when (task.ORIGIN_RECORD_MODULE_SAMPLING_ID) {
             1 -> {
                 viewPagerAdapter.apply { addFragment(SamplingCyd1()) }
             }

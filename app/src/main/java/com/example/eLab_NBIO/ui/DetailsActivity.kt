@@ -2,18 +2,31 @@ package com.example.eLab_NBIO.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.dou361.dialogui.DialogUIUtils
 import com.example.eLab_NBIO.R
 import com.example.eLab_NBIO.adapter.MyViewPagerAdapter
-import com.example.eLab_NBIO.ui.Sampling.*
+import com.example.eLab_NBIO.http.RetrofitService
+import com.example.eLab_NBIO.models.Cyds
+import com.example.eLab_NBIO.models.Task
+import com.example.eLab_NBIO.models.Tasks
+import com.example.eLab_NBIO.models.sampling.*
+import com.example.eLab_NBIO.ui.sampling.*
+import com.example.eLab_NBIO.util.TokenUtil
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.content_main.*
+import kotlin.math.log
 
 class DetailsActivity : AppCompatActivity() {
-
-    private var fragmentType = 0
     private lateinit var context: Context
+    private lateinit var task: Task
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,42 +50,13 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        val intent = intent
-        fragmentType = intent.getIntExtra("fragment_type", 0)
-        //position = intent.getIntExtra("position", -1)
-
-        //Log.v("fragment_type", fragmentType.toString())
         toolbar_details.title = ""
         setSupportActionBar(toolbar_details)
         /*显示Home图标*/
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
         /*设置ToolBar标题，使用TestView显示*/
         tv_title_details.text = resources.getString(R.string.title_details)
         initFragments()
-        /*when (fragmentType) {
-            1 -> {
-                view_pager.currentItem = 0
-            }
-            2 -> {
-                view_pager.currentItem = 1
-            }
-            3 -> {
-                view_pager.currentItem = 2
-            }
-            4 -> {
-                view_pager.currentItem = 3
-            }
-            5 -> {
-                view_pager.currentItem = 4
-            }
-            6 -> {
-                view_pager.currentItem = 5
-            }
-            7 -> {
-                view_pager.currentItem = 6
-            }
-        }*/
     }
 
     /**
@@ -80,7 +64,8 @@ class DetailsActivity : AppCompatActivity() {
      */
     private fun initFragments() {
         val viewPagerAdapter = MyViewPagerAdapter(supportFragmentManager)
-        when (fragmentType) {
+        task = Tasks.taskList[Tasks.position]
+        when (task.ORIGIN_RECORD_MODULE_SAMPLING_ID) {
             1 -> {
                 viewPagerAdapter.apply { addFragment(SamplingFragment1()) }
             }
@@ -107,4 +92,18 @@ class DetailsActivity : AppCompatActivity() {
         view_pager.adapter = viewPagerAdapter
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        clearTasks()
+    }
+
+    private fun clearTasks() {
+        Tasks.sampling1 = Sampling1()
+        Tasks.sampling2 = Sampling2()
+        Tasks.sampling3 = Sampling3()
+        Tasks.sampling4 = Sampling4()
+        Tasks.sampling5 = Sampling5()
+        Tasks.sampling6 = Sampling6()
+        Tasks.sampling7 = Sampling7()
+    }
 }
