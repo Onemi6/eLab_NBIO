@@ -56,7 +56,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
     private fun initView() {
         attemptGetLabs()
         val isRemember: Boolean = SpValueUtil.getBoolean("isRemember", false)

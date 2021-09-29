@@ -37,7 +37,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), RecyclerItemClickListener {
 
-    private val requestLocationPermissionCode = 100
     private var mExitTime: Long = 0
     private var _context: Context? = null
     private lateinit var taskAdapter: TaskAdapter<Task>
@@ -95,7 +94,6 @@ class MainActivity : AppCompatActivity(), RecyclerItemClickListener {
             rv_mainInfo_add.adapter = taskAdapter
             attemptGetTasks()
             //showLocation()
-            initLocation()
         } else {
             toLogin()
         }
@@ -188,64 +186,7 @@ class MainActivity : AppCompatActivity(), RecyclerItemClickListener {
         super.onBackPressed()
     }
 
-    override fun onPause() {
-        super.onPause()
-        LocationUtil.removeLocationUpdatesListener()
-    }
 
-    override fun onResume() {
-        //挂上LocationListener, 在状态变化时刷新位置显示，因为requestPermissionss是异步执行的，所以要先确认是否有权限
-        super.onResume()
-        initLocation()
-    }
-
-    private fun initLocation() {
-        if (LocationUtil.getInstance(this@MainActivity)?.isLocationProviderEnabled() == true) {
-            val location = LocationUtil.getInstance(this@MainActivity)?.showLocation()
-            if (location != null) {
-                //tv_location.text = "地理位置：lon:${location.longitude};lat:${location.latitude}"
-                val address: String = "纬度：" + location.latitude + "经度：" + location.longitude
-                tv_location.text = address
-                //tv_location.text=getAddress(location.getLongitude(),location.getLatitude())
-            }
-        } else {
-            requestLocation()
-        }
-    }
-
-    /**
-     * 检查地理位置开关是否打开，如果未打开，则提示用户打开地理位置开关。
-     * 如果已打开，则显示地理位置；如果被拒绝，直接关闭窗口。
-     */
-    private fun requestLocation() {
-        val message = "本应用需要获取地理位置，请打开获取位置的开关"
-        val alertDialog = AlertDialog.Builder(this).setMessage(message).setCancelable(false)
-            .setPositiveButton(android.R.string.ok)
-            { dialog, _ ->
-                dialog.dismiss()
-                gotoSysLocationSettingsPage()
-            }
-            .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
-            .create()
-        alertDialog.show()
-    }
-
-    private fun gotoSysLocationSettingsPage() {
-        val intent = Intent()
-        intent.action = Settings.ACTION_LOCATION_SOURCE_SETTINGS
-        startActivityForResult(intent, requestLocationPermissionCode)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            requestLocationPermissionCode -> {
-                initLocation()
-            }
-            else -> {
-            }
-        }
-    }
 
     private fun attemptGetTasks() {
         val dialogLogin = DialogUIUtils.showLoading(

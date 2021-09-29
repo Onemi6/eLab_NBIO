@@ -4,10 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -15,9 +12,11 @@ import com.dou361.dialogui.DialogUIUtils
 import com.example.eLab_NBIO.R
 import com.example.eLab_NBIO.models.Cyds
 import com.example.eLab_NBIO.models.samplingCyd.SamplingCyd2
+import com.example.eLab_NBIO.util.LocationUtil
 import com.example.eLab_NBIO.util.StringUtils
 import com.google.android.material.snackbar.Snackbar
 import com.loper7.date_time_picker.dialog.CardDatePickerDialog
+import kotlinx.android.synthetic.main.activity_cyd.*
 import kotlinx.android.synthetic.main.item_sampling_cyd_2.*
 
 class SamplingCyd2 : Fragment() {
@@ -38,6 +37,10 @@ class SamplingCyd2 : Fragment() {
         return mView
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.cyd_part, menu)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val context: Context? = this.context
@@ -56,7 +59,28 @@ class SamplingCyd2 : Fragment() {
                 saveCyd()
                 DialogUIUtils.dismiss(dialogLogin)
             }
+            R.id.action_cyd_location -> {
+                if ( activity?.let { LocationUtil.getInstance(it)?.isLocationProviderEnabled() } == true) {
+                    val location = LocationUtil.getInstance(requireActivity())?.showLocation()
+                    if (location != null) {
+                        //tv_location.text = "地理位置：lon:${location.longitude};lat:${location.latitude}"
+                        //val address: String = "纬度：" + location.latitude + ",经度：" + location.longitude
+                        //tv_location.text = address
+                        //tv_location.text=getAddress(location.getLongitude(),location.getLatitude())
 
+                        mView.findViewById<EditText>(R.id.JD).setText(location.longitude.toString())
+                        mView.findViewById<EditText>(R.id.WD).setText(location.latitude.toString())
+
+                        LocationUtil.removeLocationUpdatesListener()
+                    }
+                } else {
+                    Snackbar.make(
+                        CYDMC, "需要定位权限,请先开启!",
+                        Snackbar.LENGTH_LONG
+                    ).setAction("Action", null)
+                        .show()
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -131,6 +155,6 @@ class SamplingCyd2 : Fragment() {
             CYDMC, "保存成功",
             Snackbar.LENGTH_LONG
         ).setAction("Action", null)
-            .show();
+            .show()
     }
 }

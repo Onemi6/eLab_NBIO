@@ -2,27 +2,16 @@ package com.example.eLab_NBIO.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.dou361.dialogui.DialogUIUtils
 import com.example.eLab_NBIO.R
 import com.example.eLab_NBIO.adapter.MyViewPagerAdapter
-import com.example.eLab_NBIO.http.RetrofitService
-import com.example.eLab_NBIO.models.Cyds
 import com.example.eLab_NBIO.models.Task
 import com.example.eLab_NBIO.models.Tasks
 import com.example.eLab_NBIO.models.sampling.*
 import com.example.eLab_NBIO.ui.sampling.*
-import com.example.eLab_NBIO.util.TokenUtil
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_details.*
-import kotlinx.android.synthetic.main.content_main.*
-import kotlin.math.log
 
 class DetailsActivity : AppCompatActivity() {
     private lateinit var context: Context

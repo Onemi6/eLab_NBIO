@@ -29,7 +29,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.android.synthetic.main.fragment_sampling1.*
 
 class SamplingFragment1 : Fragment(), AdapterView.OnItemSelectedListener {

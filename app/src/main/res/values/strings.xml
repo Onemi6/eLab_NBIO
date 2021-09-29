@@ -21,6 +21,7 @@
     <string name="app_versionName">采样平台V%1$s</string>
     <string name="prov_submit">暂存</string>
     <string name="submit">提交</string>
+    <string name="action_location">定位</string>
     <string name="action_save">保存</string>
     <string name="upload_img">上传图片</string>
     <string name="selectImg">选择图片</string>
